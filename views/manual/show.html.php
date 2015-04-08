@@ -13,15 +13,15 @@ if (isset($this['doc'])) {
 }
 ?>
 <h3><a href="/cn/manual/copyright">版权声明</a></h3>
-<h3><a href="/cn/manual/v1/web">Web 应用开发框架</a></h3>
+<h3><a href="/cn/manual/web">Web 应用开发框架</a></h3>
 <div>description</div>
-<h3><a href="/cn/manual/v1/cli">命令行应用开发框架</a></h3>
+<h3><a href="/cn/manual/cli">命令行应用开发框架</a></h3>
 <div>description</div>
-<h3><a href="/cn/manual/v1/common">Common 模块</a></h3>
+<h3><a href="/cn/manual/common">Common 模块</a></h3>
 <div>description</div>
-<h3><a href="/cn/manual/v1/db">Db 模块</a></h3>
+<h3><a href="/cn/manual/db">Db 模块</a></h3>
 <div>description</div>
-<h3><a href="/cn/manual/v1/logging">Logging 模块</a></h3>
+<h3><a href="/cn/manual/logging">Logging 模块</a></h3>
 <div>description</div>
 <?php });?>
 <div></div>

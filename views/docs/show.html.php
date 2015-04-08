@@ -12,7 +12,7 @@ if (isset($this['doc'])) {
 }
 ?>
 <h1>文档</h1>
-<h2><a href="/cn/manual">Hyperframework 手册 (v1)</a></h2>
-<h2><a href="/api/v1.0.0-alpha/index.html">API</a> (v1.0.0 alpha)</h2>
+<h2><a href="/cn/manual">Hyperframework 手册</a></h2>
+<h2><a href="/api/v1.0.0-alpha/index.html">API</a></h2>
 <?php });?>
 <div></div>

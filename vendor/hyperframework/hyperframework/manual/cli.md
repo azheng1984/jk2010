@@ -1,9 +1,9 @@
 # 命令行应用开发框架
-## 安装
-## 入门
-## 单命令应用
-## 多命令应用
-## Command 对象
-## 参数
-## 选项
-## 配置
+## [安装](/cn/manual/cli/installation)
+## [入门](/cn/manual/cli/getting_started)
+## [单命令应用](/cn/manual/cli/single_command_applications)
+## [多命令应用](/cn/manual/cli/multiple_command_applications)
+## [命令对象](/cn/manual/cli/command_objects)
+## [命令选项](/cn/manual/cli/command_options)
+## [命令参数](/cn/manual/cli/command_arguments)
+## [配置](/cn/manual/cli/configuration)
