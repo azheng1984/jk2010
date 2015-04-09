@@ -25,7 +25,7 @@
 ./composer.phar update
 ```
 
-## 创建应用初始配置文件
+## 创建应用初始化配置文件
 创建 config/init.php
 
 添加配置代码：
