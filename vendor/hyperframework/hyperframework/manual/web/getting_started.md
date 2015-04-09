@@ -1,6 +1,6 @@
 # 入门
 
-## 通过 Composer 安装 Hyperframework
+## 通过 Composer 安装 Hyperframework Web 模块
 参考 [安装](/cn/manual/web/installation)。
 
 ## 配置类自动加载
@@ -8,21 +8,18 @@
 
 ```.json
 {
+   "require": {
+       "hyperframework/web": "*"
+   },
    "autoload": {
         "psr-4": {
-            "Hyperframework\\": "vendor/hyperframework/hyperframework/lib",
             "": "lib"
         }
-    },
-    "repositories": [
-        {
-            "packagist": false
-        }
-    ]
+    }
 }
 ```
 
-更新 composer 类加载逻辑，需要在项目根目录中运行：
+为了更新 composer 类加载逻辑，需要在项目根目录中运行：
 
 ```.bash
 ./composer.phar update
@@ -47,9 +44,8 @@ NOTE: init.php 必须返回一个数组。
 
 ```.php
 <?php
-use Hyperframework\Web\App.php
 require dirname(__DIR__) . 'vendor' . DIRECTORY_SEPERATOR . 'autoload.php';
-App::run();
+Hyperframework\Web\App::run();
 ```
 
 ## 创建路由器
