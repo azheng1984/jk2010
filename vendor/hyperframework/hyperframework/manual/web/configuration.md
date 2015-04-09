@@ -6,8 +6,8 @@
 
 默认值: Router
 
-## 开启 http 方法重写
-名称: hyperframework.web.rewrite_http_method
+## 开启 http 请求方法重写
+名称: hyperframework.web.rewrite_request_method
 
 类型： bool
 

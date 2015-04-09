@@ -24,8 +24,8 @@ App 类通过调用自身的 createApp 静态方法创建 App 对象。对象创
 Config::set('hyperframework.web.router_class', 'CustomRouter');
 ```
 
-## 4 重写 Http 方法
-App 通过自身的 rewriteRequestMethod 方法来重写 Http 方法。 该方法使用 $_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 或 $_POST\['_method'] 来重写 $_SERVER\['REQUEST_METHOD']，$_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 优先级高于 $_POST\['_method']。如果重写成功，$_SERVER\['REQUEST_METHOD'] 的原始值将会保存在 $_SERVER\['ORIGINAL_REQUEST_METHOD'] 中。
+## 4 重写 Http 请求方法
+App 通过自身的 rewriteRequestMethod 方法来重写 Http 请求方法。 该方法使用 $_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 或 $_POST\['_method'] 来重写 $_SERVER\['REQUEST_METHOD']，$_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 优先级高于 $_POST\['_method']。如果重写成功，$_SERVER\['REQUEST_METHOD'] 的原始值将会保存在 $_SERVER\['ORIGINAL_REQUEST_METHOD'] 中。
 
 可以通过配置关闭 Http 方法重写：
 ```.php
