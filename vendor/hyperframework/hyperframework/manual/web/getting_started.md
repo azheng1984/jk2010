@@ -81,4 +81,4 @@ echo $this['message'];
 ```
 
 ## 完成
-访问网站根目录，浏览器将会输出 “hello world!”。
+使用浏览器访问网站根目录，将会输出 “hello world!”。
