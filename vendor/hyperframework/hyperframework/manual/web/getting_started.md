@@ -4,7 +4,7 @@
 参考 [安装](/cn/manual/web/installation)。
 
 ## 配置类自动加载
-修改 composer.json，加入 lib 文件夹：
+创建 lib 文件夹，同时修改 composer.json，加入 namespace 对应关系：
 
 ```.json
 {
