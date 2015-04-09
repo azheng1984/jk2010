@@ -35,7 +35,7 @@ Config::set('hyperframework.web.rewrite_request_method', false);
 ## 5 执行 Csrf 检查
 App 通过自身的 checkCsrf 方法来执行 Csrf 检查。
 
-关于 Csrf 检查的详细信息，参考[安全](/cn/manual/web/security)。
+关于 Csrf 检查的详细信息，参考 [安全](/cn/manual/web/security)。
 
 ## 6 其他
-由于 Web 模块的 App 类继承自 Common 模块的 App 类，更多功能参考 Common 模块文档的 [App 基础](/cn/manual/common/app_basics)。
+由于 Web 模块的 App 类继承自 Common 模块的 App 类，更多功能参考 Common 模块文档中的 [App 基础](/cn/manual/common/app_basics)。
