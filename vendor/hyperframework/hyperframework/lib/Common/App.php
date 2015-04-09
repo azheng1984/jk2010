@@ -37,7 +37,7 @@ abstract class App {
             $env = (string)$_ENV['HYPERFRAMEWORK_ENV'];
             if ($env !== '') {
                 $path = ConfigFileFullPathBuilder::build(
-                    'env' . DIRECTORY_SEPARATOR . $env . '.php'
+                    'environments' . DIRECTORY_SEPARATOR . $env . '.php'
                 );
                 if (file_exists($path)) {
                     Config::importFile($path);

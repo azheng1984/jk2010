@@ -37,5 +37,8 @@ App 通过自身的 checkCsrf 方法来执行 Csrf 检查。
 
 关于 Csrf 检查的详细信息，参考 [安全](/cn/manual/web/security)。
 
-## 6 其他
-由于 Web 模块的 App 类继承自 Common 模块的 App 类，更多功能参考 Common 模块文档中的 [App 基础](/cn/manual/common/app_basics)。
+## 6 默认的错误处理器
+Web 模块的 App 使用 Hyperframework\Web\ErrorHandler 作为默认错误处理器。
+
+## 7 其他
+由于 Web 模块的 App 类继承自 Common 模块的 App 类，通过 Common 模块文档中的 [App 基础](/cn/manual/common/app_basics) 获取更多相关信息。
