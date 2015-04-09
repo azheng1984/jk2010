@@ -3,5 +3,5 @@
 ## [入门](/cn/manual/cli/getting_started)
 ## [单命令应用](/cn/manual/cli/single_command_applications)
 ## [多命令应用](/cn/manual/cli/multiple_command_applications)
-## [命令对象](/cn/manual/cli/command_objects)
+## [命令](/cn/manual/cli/commands)
 ## [配置](/cn/manual/cli/configuration)

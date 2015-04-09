@@ -1,6 +1,6 @@
 # Common 模块
 ## [安装](/cn/manual/common/installation)
-## [App 对象](/cn/manual/common/app_objects)
+## [App 基础](/cn/manual/common/app_basics)
 ## [配置管理](/cn/manual/common/configuration_management)
 ## [错误处理](/cn/manual/common/error_handling)
 ## [合并命名空间](/cn/manual/common/appending_and_prepending_namespaces)
@@ -9,5 +9,5 @@
 ## [文件加载器](/cn/manual/common/file_loaders)
 ## [构建完整的文件路径](/cn/manual/common/building_file_full_paths)
 ## [识别完整的文件路径](/cn/manual/common/recognizing_file_full_paths)
-## [注册表](/cn/manual/common/registry)
+## [注册表基础](/cn/manual/common/registry_basics)
 ## [配置](/cn/manual/common/configuration)

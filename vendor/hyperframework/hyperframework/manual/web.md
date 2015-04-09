@@ -3,7 +3,7 @@
 
 ## [入门](/cn/manual/web/getting_started)
 
-## [App 对象](/cn/manual/web/app_objects)
+## [App 基础](/cn/manual/web/app_basics)
 
 ## [路由](/cn/manual/web/routing)
 
