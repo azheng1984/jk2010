@@ -7,21 +7,6 @@ $this['js_code'] = '<script>hljs.initHighlightingOnLoad();</script>';
 $this->setBlock('content', function() {?>
 <h2><a href="/cn/manual">Hyperframework 手册</a></h2>
 <?php 
-if (isset($this['doc'])) {
     echo $this['doc'];
-    return;
-}
-?>
-<h3><a href="/cn/manual/copyright">版权声明</a></h3>
-<h3><a href="/cn/manual/web">Web 应用开发框架</a></h3>
-<div>description</div>
-<h3><a href="/cn/manual/cli">命令行应用开发框架</a></h3>
-<div>description</div>
-<h3><a href="/cn/manual/common">Common 模块</a></h3>
-<div>description</div>
-<h3><a href="/cn/manual/db">Db 模块</a></h3>
-<div>description</div>
-<h3><a href="/cn/manual/logging">Logging 模块</a></h3>
-<div>description</div>
-<?php });?>
+});?>
 <div></div>

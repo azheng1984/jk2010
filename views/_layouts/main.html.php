@@ -7,7 +7,6 @@
 <?php
     }
 }?>
-
 </head>
 <body>
 <div>
@@ -15,6 +14,7 @@
 </div>
 <div>
     <a href="/cn">首页</a>
+    <a href="/cn/downloads">下载</a>
     <a href="/cn/docs">文档</a>
     <a href="/cn/blog">日志</a>
 </div>
