@@ -11,7 +11,7 @@
 
 ## [视图](/cn/manual/web/views)
 
-## [错误处理](/cn/manual/web/error_handing)
+## [错误处理](/cn/manual/web/error_handling)
 
 ## [安全](/cn/manual/web/security)
 
