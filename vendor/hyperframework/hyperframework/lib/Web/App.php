@@ -65,7 +65,7 @@ class App extends Base implements AppInterface {
 
     protected function rewriteRequestMethod() {
         if (Config::getBool(
-            'hyperframework.web.rewrite_http_method', true
+            'hyperframework.web.rewrite_request_method', true
         )) {
             $method = null;
             if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
