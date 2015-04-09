@@ -26,9 +26,7 @@
 ```
 
 ## 创建应用初始化配置文件
-创建 config/init.php
-
-添加配置代码：
+创建 config/init.php，添加配置代码：
 
 ```.php
 <?php
@@ -38,9 +36,7 @@ return [];
 NOTE: init.php 必须返回一个数组。
 
 ## 创建应用启动文件
-创建 public/index.php
-
-添加应用启动代码：
+创建 public/index.php，添加应用启动代码：
 
 ```.php
 <?php
@@ -49,9 +45,7 @@ Hyperframework\Web\App::run();
 ```
 
 ## 创建路由器
-创建 lib/Router.php
-
-添加路由器代码：
+创建 lib/Router.php，添加路由器代码：
 
 ```.php
 <?php
@@ -65,9 +59,7 @@ class Router extends Base {
 ```
 
 ## 创建控制器
-创建 lib/Controllers/IndexController.php
-
-添加控制器代码：
+创建 lib/Controllers/IndexController.php，添加控制器代码：
 
 ```.php
 <?php
@@ -81,9 +73,7 @@ class IndexController extends Controller {
 ```
 
 ## 创建视图
-创建 views/index/show.php
-
-添加视图代码：
+创建 views/index/show.php，添加视图代码：
 
 ```.php
 <?php
