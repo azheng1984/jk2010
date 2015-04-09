@@ -1,17 +1,17 @@
 # App 基础
 
 ## 什么是 App 类
-Web 模块中的 App 类继承自 Common 模块的 App 类。通过 run 静态方法定义了 Web 应用的主流程。入口文件（public/index.php）通过调用该类中的 run 静态方法来运行应用。
+Web 模块中的 App 类继承自 Common 模块的 App 类，并通过 run 静态方法定义了 Web 应用的主流程。入口文件（public/index.php）通过调用该类中的 run 静态方法来运行应用。
 
 ## Web 应用的主流程
 ### App 对象创建
 App 类通过调用自身的 createApp 静态方法创建 App 对象。对象创建过程中会执行父类的构造函数，同时重写 Http 方法（可配置），执行 Csrf 检查（可配置）。
 
 ### Controller 对象创建
-创建过程需要通过 Router 来获取 Controller 类。
+通过 Router 来获取 Controller 类，并创建 Controller 对象。
 
 ### 运行 Controller
-通过调用 Controller 对象的 run 方法来运行。
+通过调用 Controller 对象的 run 方法来运行 Controller。
 
 ### 结束运行
 结束运行时，将会调用 App 对象的 finalize 方法。
