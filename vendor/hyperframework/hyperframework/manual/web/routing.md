@@ -78,6 +78,11 @@ $this->match('/', ['methods' => ['GET']]);
 $this->matchGet('/');
 ```
 
+限制多个 http 请求方法：
+```.php
+$this->match('/', ['methods' => ['GET', 'POST']]);
+```
+
 #### 文件格式
 ```.php
 $this->match('path', ['format' => 'html']);
@@ -104,6 +109,12 @@ $this->match('path', ['format' => true]);
 $this->match('path', ['format' => true, 'default_format' => 'html']);
 ```
 
+#### 动态片段格式
+可以使用正则定义动态规则的格式，例如：
+```.php
+$this->match(':segment', [':segment' => '[a-z]']);
+```
+
 #### 附加规则
 ```.php
 $this->match(':segment', ['extra' => function($matches) {
@@ -121,7 +132,51 @@ $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 ```
 
 ## 单个资源匹配
+```.php
+$this->matchResource('article');
+```
+
+此时的请求和 action 的对应关系：
+| HTTP 方法 | 路径           | Controller#Action                 |
+| --------- | --------------| --------------------------------- |
+| GET       | /article      | ArticleController::doShowAction   |
+| GET       | /article/new  | ArticleController::doNewAction    |
+| GET       | /article/edit | ArticleController::doEditAction   |
+| POST      | /article      | ArticleController::doCreateAction |
+| PUT/PATCH | /article      | ArticleController::doUpdateAction |
+| DELETE    | /article      | ArticleController::doDeleteAction |
+
+### 资源匹配选项
+#### actions
+
+#### extra_actions
+
+#### ignored_actions
+
 ## 资源集合匹配
+```.php
+$this->matchResource('articles');
+```
+
+此时的请求和 action 的对应关系：
+| HTTP 方法 | 路径                | Controller#Action                  |
+| --------- | ------------------ | ---------------------------------- |
+| GET       | /articles          | ArticlesController::doIndexAction  |
+| GET       | /articles/:id      | ArticlesController::doShowAction   |
+| GET       | /articles/new      | ArticlesController::doNewAction    |
+| GET       | /articles/:id/edit | ArticlesController::doEditAction   |
+| POST      | /articles          | ArticlesController::doCreateAction |
+| PUT/PATCH | /articles/:id      | ArticlesController::doUpdateAction |
+| DELETE    | /articles/:id      | ArticlesController::doDeleteAction |
+
+#### actions
+
+#### extra_collection_actions
+
+#### extra_element_actions
+
+#### ignored_actions
+
 ## 获取 App 对象
 ## 获取请求路径
 ## 设置/获取 Action 方法
