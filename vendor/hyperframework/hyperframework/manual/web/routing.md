@@ -52,7 +52,7 @@ $this->match('required(/optional)');
 ```
 
 ### 匹配 module、controller 和 action
-:module、:controller 和 :action 动态段会被用来设置 module、controller 和 action，无法通过 Router 的 getParam 获取。
+:module、:controller 和 :action 动态段会被用来设置 module、controller 和 action。
 
 ```.php
 $this->match(':module/:controller/:action');
@@ -74,22 +74,22 @@ $this->match('/', ['methods' => ['GET']]);
 ```
 #### 文件格式
 ```.php
-$this->match('/', ['format' => 'html']);
+$this->match('path', ['format' => 'html']);
 ```
 
 匹配多个格式：
 ```.php
-$this->match('/', ['format' => 'html|json']);
+$this->match('path', ['format' => 'html|json']);
 ```
 
 匹配任意格式：
 ```.php
-$this->match('/', ['format' => true]);
+$this->match('path', ['format' => true]);
 ```
 
 设置默认格式：
 ```.php
-$this->match('/', ['default_format' => 'html']);
+$this->match('path', ['format' => true, 'default_format' => 'html']);
 ```
 
 #### 附加规则
