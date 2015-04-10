@@ -1,8 +1,8 @@
 # 路由
 ## 简介
-通过实现 Hyperframework\Web\Router 类的 execute 抽象方法来处理路由逻辑。execute 方法在 Router 的构造函数中被调用。
+通过实现 `Hyperframework\Web\Router` 类的 `execute` 抽象方法来处理路由逻辑。`execute` 方法在 `Router` 的构造函数中被调用。
 
-execute 方法可以返回一个 bool 值，表示路由是否已经匹配。或者返回一个字符串，表示已经匹配，同时设置 module、controller 和 action，格式如下：
+`execute` 方法可以返回一个 `bool` 值，表示路由是否已经匹配。或者返回一个字符串，表示已经匹配，同时设置 `module`、`controller` 和 `action`，格式如下：
 
 ```.php
 return 'action';
@@ -208,6 +208,7 @@ $this->matchResource('articles');
 #### ignored_actions
 
 #### id
+默认值 \d+
 
 #### 更多选项
 更多资源集合选项和 match 方法的选项相同。
