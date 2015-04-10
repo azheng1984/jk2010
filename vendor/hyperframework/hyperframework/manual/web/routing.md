@@ -133,51 +133,84 @@ $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 
 ## 单个资源匹配
 ```.php
-$this->matchResource('article');
+$this->matchResource('sitemap');
 ```
 
-此时的请求和 action 方法的对应关系：
+此时 controller 等于 sitemap， action 对应关系：
 
-| HTTP 方法 | 路径           | Controller::Action                |
-| --------- | --------------| --------------------------------- |
-| GET       | /article      | ArticleController::doShowAction   |
-| GET       | /article/new  | ArticleController::doNewAction    |
-| GET       | /article/edit | ArticleController::doEditAction   |
-| POST      | /article      | ArticleController::doCreateAction |
-| PUT/PATCH | /article      | ArticleController::doUpdateAction |
-| DELETE    | /article      | ArticleController::doDeleteAction |
+| HTTP 方法 | 路径          | action |
+| --------- | --------------| ------ |
+| GET       | /sitemap      | show   |
+| GET       | /sitemap/new  | new    |
+| GET       | /sitemap/edit | edit   |
+| POST      | /sitemap      | create |
+| PUT/PATCH | /sitemap      | update |
+| DELETE    | /sitemap      | delete |
+
+### Action 定义
+```.php
+$actions = ['preview'];
+```
+等价与：
+```.php
+$actions = ['preview' => [['GET'], 'preview']];
+```
+
+第一个元素是字符串（定义一个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
+
+第二个参数是请求的相对路径，默认和 action 名称相同。相对路径基于资源路径，例如，资源路径是 sitemap，action 路径是 preview，那么访问此 action 的路径是 sitemap/preview。
+
+可以加入更多键值对来限定 action 匹配规则，用法和 match 方法的选项相同。例如：
+```.php
+$actions = ['preview' => ['extra' => $callback]];
+```
 
 ### 资源匹配选项
 #### actions
 
 #### extra_actions
+```.html
+$this->matchResource('article', ['extra_actions' => ['preview']]);
+```
 
 #### ignored_actions
+
+#### 更多选项
+更多资源选项和 match 方法的选项相同。
 
 ## 资源集合匹配
 ```.php
 $this->matchResource('articles');
 ```
 
-此时的请求和 action 方法的对应关系：
+此时 controller 等于 articles， action 对应关系：
 
-| HTTP 方法 | 路径                | Controller::Action                 |
-| --------- | ------------------ | ---------------------------------- |
-| GET       | /articles          | ArticlesController::doIndexAction  |
-| GET       | /articles/:id      | ArticlesController::doShowAction   |
-| GET       | /articles/new      | ArticlesController::doNewAction    |
-| GET       | /articles/:id/edit | ArticlesController::doEditAction   |
-| POST      | /articles          | ArticlesController::doCreateAction |
-| PUT/PATCH | /articles/:id      | ArticlesController::doUpdateAction |
-| DELETE    | /articles/:id      | ArticlesController::doDeleteAction |
+| HTTP 方法 | 路径               | action                 |
+| --------- | ------------------ | ------ |
+| GET       | /articles          | index  |
+| GET       | /articles/:id      | show   |
+| GET       | /articles/new      | new    |
+| GET       | /articles/:id/edit | edit   |
+| POST      | /articles          | create |
+| PUT/PATCH | /articles/:id      | update |
+| DELETE    | /articles/:id      | delete |
 
 #### actions
+
+#### collection_actions
+
+#### element_actions
 
 #### extra_collection_actions
 
 #### extra_element_actions
 
 #### ignored_actions
+
+#### id
+
+#### 更多选项
+更多资源集合选项和 match 方法的选项相同。
 
 ## 获取 App 对象
 ## 获取请求路径
