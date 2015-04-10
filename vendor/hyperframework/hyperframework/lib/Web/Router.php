@@ -1118,22 +1118,23 @@ abstract class Router implements RouterInterface {
                         'Extra rule must be a closure, ' . $type . ' given.'
                     );
                 }
-                if ($function($matches) === false) {
+                $result = (bool)$function($matches);
+                if ($result !== true) {
                     return false;
                 }
             }
             return true;
         } else {
             if ($extra instanceof Closure === false) {
-                $type = gettype($function);
+                $type = gettype($extra);
                 if ($type === 'Object') {
-                    $type = get_class($function);
+                    $type = get_class($extra);
                 }
                 throw new RoutingException(
                     'Extra rule must be a closure, ' . $type . ' given.'
                 );
             }
-            return $extra($matches) !== false;
+            return (bool)$extra($matches);
         }
     }
 
