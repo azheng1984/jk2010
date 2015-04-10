@@ -136,9 +136,9 @@ $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 $this->matchResource('article');
 ```
 
-此时的请求和 action 的对应关系：
+此时的请求和 action 方法的对应关系：
 
-| HTTP 方法 | 路径           | Controller#Action                 |
+| HTTP 方法 | 路径           | Controller::Action                |
 | --------- | --------------| --------------------------------- |
 | GET       | /article      | ArticleController::doShowAction   |
 | GET       | /article/new  | ArticleController::doNewAction    |
@@ -159,9 +159,9 @@ $this->matchResource('article');
 $this->matchResource('articles');
 ```
 
-此时的请求和 action 的对应关系：
+此时的请求和 action 方法的对应关系：
 
-| HTTP 方法 | 路径                | Controller#Action                  |
+| HTTP 方法 | 路径                | Controller::Action                 |
 | --------- | ------------------ | ---------------------------------- |
 | GET       | /articles          | ArticlesController::doIndexAction  |
 | GET       | /articles/:id      | ArticlesController::doShowAction   |
