@@ -77,6 +77,12 @@ $this->match('/', ['methods' => ['GET']]);
 $this->match('path', ['format' => 'html']);
 ```
 
+等价与：
+
+```.php
+$this->match('path.html');
+```
+
 匹配多个格式：
 ```.php
 $this->match('path', ['format' => 'html|json']);
