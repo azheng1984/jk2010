@@ -72,6 +72,12 @@ $this->match('*wildcard');
 ```.php
 $this->match('/', ['methods' => ['GET']]);
 ```
+等价与：
+
+```.php
+$this->matchGet('/');
+```
+
 #### 文件格式
 ```.php
 $this->match('path', ['format' => 'html']);
@@ -124,7 +130,6 @@ $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 ## 设置/获取 Controller 类
 ## 设置/获取 Module
 ## 路由参数
-## Http 方法匹配
 ## 重定向
 ## 查询是否匹配
 ## 设置/获取匹配状态
