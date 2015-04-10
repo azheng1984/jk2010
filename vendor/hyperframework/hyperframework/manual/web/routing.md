@@ -138,7 +138,7 @@ $this->matchResource('article');
 
 此时的请求和 action 的对应关系：
 
-| HTTP    | path           | Controller#Action                 |
+| HTTP 方法 | 路径           | Controller#Action                 |
 | --------- | --------------| --------------------------------- |
 | GET       | /article      | ArticleController::doShowAction   |
 | GET       | /article/new  | ArticleController::doNewAction    |
@@ -161,7 +161,7 @@ $this->matchResource('articles');
 
 此时的请求和 action 的对应关系：
 
-| HTTP   | Path                | Controller#Action                  |
+| HTTP 方法 | 路径                | Controller#Action                  |
 | --------- | ------------------ | ---------------------------------- |
 | GET       | /articles          | ArticlesController::doIndexAction  |
 | GET       | /articles/:id      | ArticlesController::doShowAction   |
