@@ -40,7 +40,7 @@ $this->match('/');
 $this->match(':segment');
 ```
 
-如果匹配成功，可以通过 getParam 获取对应的值，例如：
+如果匹配成功，可以通过 Router 的 getParam 获取对应的值，例如：
 
 ```.php
 $this->getParam('segment');
@@ -64,7 +64,7 @@ $this->match('*wildcard');
 
 和动态段不同的是，通配符匹配是贪婪匹配，匹配会跨越 "/"。
 
-如果匹配成功，可以通过 getParam 获取对应的值。
+如果匹配成功，可以通过 Router 的 getParam 获取对应的值。
 
 ### match 选项
 #### 限制 http 请求方法
