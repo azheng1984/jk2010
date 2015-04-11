@@ -16,7 +16,7 @@ return 'controller/action';
 ```.php
 return 'module/controller/action';
 ```
-也可以超过三个层，除了末尾两层，其他都是 module，例如：
+也可以超过三层，除了末尾两层，其他都是 module，例如：
 ```.php
 return 'module_segment_1/module_segment_2/controller/action';
 ```
@@ -29,13 +29,13 @@ execute 执行完成后，如果匹配状态等于 false，将会抛出 NotFound
 $this->match('segment');
 ```
 
-所有匹配规则都必须使用相对路径（默认基于根路径，可以通过 matchScope 修改）。如需匹配顶层路径，则使用 '/' 规则，例如：
+所有匹配规则都建议使用相对路径（默认基于根路径，可以通过 matchScope 修改）。如需匹配顶层路径，则使用 '/'，例如：
 
 ```.php
 $this->match('/');
 ```
 
-### 匹配动态路径片段
+### 匹配动态段
 ```.php
 $this->match(':segment');
 ```
@@ -46,7 +46,7 @@ $this->match(':segment');
 $this->getParam('segment');
 ```
 
-### 可选片段
+### 可选段
 ```.php
 $this->match('required(/optional)');
 ```
@@ -58,16 +58,16 @@ $this->match('required(/optional)');
 $this->match(':module/:controller/:action');
 ```
 
-### 使用路径片段通配符
+### 使用路径段通配符
 ```.php
 $this->match('*wildcard');
 ```
 
-和动态路径片段不同的是，通配符匹配是贪婪匹配，匹配会跨越 "/"。
+和动态段不同的是，通配符匹配是贪婪匹配，匹配会跨越 "/"。
 
 如果匹配成功，可以通过 getParam 获取对应的值。
 
-### 匹配选项
+### match 选项
 #### 限制 http 请求方法
 ```.php
 $this->match('/', ['methods' => ['GET']]);
@@ -109,8 +109,8 @@ $this->match('path', ['format' => true]);
 $this->match('path', ['format' => true, 'default_format' => 'html']);
 ```
 
-#### 动态片段格式
-可以使用正则定义动态规则的格式，例如：
+#### 限制动态段格式
+可以使用正则表达式限制动态段的格式，例如：
 ```.php
 $this->match(':segment', [':segment' => '[a-z]']);
 ```
@@ -147,7 +147,7 @@ $this->matchResource('sitemap');
 | PUT/PATCH | /sitemap      | update |
 | DELETE    | /sitemap      | delete |
 
-### Action 定义
+### Action 规则定义
 ```.php
 $actions = ['preview'];
 ```
@@ -156,11 +156,11 @@ $actions = ['preview'];
 $actions = ['preview' => [['GET'], 'preview']];
 ```
 
-第一个元素是字符串（定义一个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
+第一个元素是字符串（定义单个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
 
-第二个参数是请求的相对路径，默认和 action 名称相同。相对路径基于资源路径，例如，资源路径是 sitemap，action 路径是 preview，那么访问此 action 的路径是 sitemap/preview。
+第二个参数是请求的路径限制，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么此 action 的路径是 sitemap/preview。
 
-action 规则支持 match 选项，加入更多键值对来限定 action 匹配规则，用法和 match 方法的选项相同。例如：
+action 规则支持 match 选项，例如：
 ```.php
 $actions = ['preview' => ['extra' => $callback]];
 ```
@@ -176,7 +176,10 @@ $this->matchResource('article', ['extra_actions' => ['preview']]);
 #### ignored_actions
 
 #### 更多选项
-更多资源选项和 match 方法的选项相同。
+资源匹配选项支持 match 选项，例如：
+```.php
+$this->matchResource('article', ['extra' => $callback]);
+```
 
 ## 资源集合匹配
 ```.php
@@ -211,7 +214,10 @@ $this->matchResource('articles');
 默认值 \d+
 
 #### 更多选项
-更多资源集合选项和 match 方法的选项相同。
+资源集合匹配选项支持 match 选项，例如：
+```.php
+$this->matchResources('articles', ['extra' => $callback]);
+```
 
 ## 获取 App 对象
 ## 获取请求路径
