@@ -453,17 +453,11 @@ abstract class Router implements RouterInterface {
      * @return bool
      */
     protected function matchResource($pattern, array $options = null) {
-        if (is_string($pattern) === false) {
-            throw new InvalidArgumentException(
-                "Argument 'pattern' must be a string, "
-                    . gettype($pattern) . ' given.'
-            );
+        if ($this->isMatched()) {
+            throw new RoutingException('Already matched.');
         }
         if ($options !== null) {
-            $actionOptions = [
-                'actions',
-                'default_actions'
-            ];
+            $actionOptions = ['actions', 'default_actions'];
             foreach ($actionOptions as $actionOption) {
                 if (isset($options[$actionOption])
                     && is_array($options[$actionOption]) === false
@@ -619,12 +613,6 @@ abstract class Router implements RouterInterface {
      * @return bool
      */
     protected function matchResources($pattern, array $options = null) {
-        if (is_string($pattern) === false) {
-            throw new InvalidArgumentException(
-                "Argument 'pattern' must be a string, "
-                    . gettype($pattern) . ' given.'
-            );
-        }
         if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
             throw new RoutingException(
                 "Invalid pattern '$pattern', "
