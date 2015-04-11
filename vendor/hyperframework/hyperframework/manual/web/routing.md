@@ -135,7 +135,7 @@ $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 $this->matchResource('sitemap');
 ```
 
-此时 controller 等于 sitemap， 默认 action 对应关系：
+此时 controller 等于 sitemap， 默认 action 规则：
 
 | Http 方法 | 路径          | action |
 | --------- | --------------| ------ |
@@ -203,7 +203,7 @@ $this->matchResources('documents');
 
 此时 controller 等于 documents。
 
-默认集合 action 对应关系：
+默认集合 action 规则：
 
 | Http 方法 | 路径                | action  |
 | --------- | ------------------- | ------ |
@@ -211,7 +211,7 @@ $this->matchResources('documents');
 | GET       | /documents/new      | new    |
 | POST      | /documents          | create |
 
-默认元素 action 对应关系：
+默认元素 action 规则：
 
 | Http 方法 | 路径                | action  |
 | --------- | ------------------- | ------ |
@@ -261,13 +261,93 @@ if ($this->match('admin/settings')) return;
 ```
 
 ## 获取 App 对象
+```.php
+$app = $this->getApp();
+```
 ## 获取请求路径
-## 设置/获取 Action 方法
+```.php
+$path = $this->getRequestPath();
+```
 ## 设置/获取 Action
+设置：
+```.php
+$this->setAction('preview');
+```
+获取：
+```.php
+$action = $this->getAction();
+```
+## 设置/获取 Action 方法
+设置：
+```.php
+$this->setActionMethod('doPreviewAction');
+```
+获取：
+```.php
+$method = $this->getActionMethod();
+```
 ## 设置/获取 Controller
+设置：
+```.php
+$this->setController('documents');
+```
+获取：
+```.php
+$controller = $this->getController();
+```
 ## 设置/获取 Controller 类
+设置：
+```.php
+$this->setControllerClass('DocumentsController');
+```
+获取：
+```.php
+$class = $this->getControllerClass();
+```
 ## 设置/获取 Module
+设置：
+```.php
+$this->setModule('admin');
+```
+获取：
+```.php
+$module = $this->getModule();
+```
 ## 路由参数
+设置：
+```.php
+$this->setParam('query', 'hyperframework');
+```
+删除：
+```.php
+$this->removeParam('query');
+```
+获取单个路由参数：
+```.php
+$query = $this->getParam('query');
+```
+获取全部路由参数：
+```.php
+$params = $this->getParams();
+```
+查询路由参数是否存在：
+```.php
+$hasQuery = $this->hasParam('query');
+```
 ## 重定向
-## 查询是否匹配
+```.php
+$this->redirect('/path');
+```
+默认使用 302 重定向，可以重写，例如：
+```.php
+$this->redirect('/path', 301);
+```
 ## 设置/获取匹配状态
+设置：
+```.php
+$this->setMatchStatus(true);
+```
+获取：
+```.php
+$isMatched = $this->isMatched();
+```
