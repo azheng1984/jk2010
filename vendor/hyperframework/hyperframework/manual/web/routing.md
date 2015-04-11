@@ -169,43 +169,43 @@ $actions = ['preview' => ['extra' => $callback]];
 #### actions
 限定 action，例如：
 ```.php
-$this->matchResource('article', ['actions' => ['preview']]);
+$this->matchResource('sitemap', ['actions' => ['preview']]);
 ```
 
 #### extra_actions
 附加 action，例如：
 ```.php
-$this->matchResource('article', ['extra_actions' => ['preview']]);
+$this->matchResource('sitemap', ['extra_actions' => ['preview']]);
 ```
 
 #### excluded_actions
 排除 action，例如：
 ```.php
-$this->matchResource('article', ['excluded_actions' => ['edit']]);
+$this->matchResource('sitemap', ['excluded_actions' => ['edit']]);
 ```
 
 #### 更多选项
 资源匹配选项支持 match 选项，例如：
 ```.php
-$this->matchResource('article', ['extra' => $callback]);
+$this->matchResource('sitemap', ['extra' => $callback]);
 ```
 
 ## 资源集合匹配
 ```.php
-$this->matchResource('articles');
+$this->matchResource('documents');
 ```
 
-此时 controller 等于 articles， action 对应关系：
+此时 controller 等于 documents， action 对应关系：
 
-| HTTP 方法 | 路径               | action  |
-| --------- | ------------------ | ------ |
-| GET       | /articles          | index  |
-| GET       | /articles/:id      | show   |
-| GET       | /articles/new      | new    |
-| GET       | /articles/:id/edit | edit   |
-| POST      | /articles          | create |
-| PUT/PATCH | /articles/:id      | update |
-| DELETE    | /articles/:id      | delete |
+| HTTP 方法 | 路径                | action  |
+| --------- | ------------------- | ------ |
+| GET       | /documents          | index  |
+| GET       | /documents/:id      | show   |
+| GET       | /documents/new      | new    |
+| GET       | /documents/:id/edit | edit   |
+| POST      | /documents          | create |
+| PUT/PATCH | /documents/:id      | update |
+| DELETE    | /documents/:id      | delete |
 
 #### actions
 
@@ -225,7 +225,7 @@ $this->matchResource('articles');
 #### 更多选项
 资源集合匹配选项支持 match 选项，例如：
 ```.php
-$this->matchResources('articles', ['extra' => $callback]);
+$this->matchResources('documents', ['extra' => $callback]);
 ```
 
 ## 获取 App 对象
