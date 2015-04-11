@@ -146,7 +146,7 @@ $this->matchResource('sitemap');
 | PUT/PATCH | /sitemap      | update |
 | DELETE    | /sitemap      | delete |
 
-### 自定义 Action 规则定义
+### 自定义 action
 ```.php
 $actions = ['preview'];
 ```
@@ -164,9 +164,26 @@ action 规则支持 match 选项（methods 选项除外），例如：
 $actions = ['preview' => ['extra' => $callback]];
 ```
 
+### 预定义 action
+预定义 action 包括：show、new、edit、create、update 和 delete。如果没有定义规则，预定义规则会被使用。
+```.php
+$actions = ['show'];
+```
+
+等价与：
+
+```.php
+$actions = ['show' => [['GET'], '/']];
+```
+
+### 修改预定义 action 规则
+```.php
+$actions = ['delete' => ['DELETE', 'remove']];
+```
+
 ### 资源匹配选项
 #### actions
-设置允许的 action，例如：
+设置 action，例如：
 ```.php
 $this->matchResource('sitemap', ['actions' => ['show']]);
 ```
@@ -204,19 +221,25 @@ $this->matchResources('documents');
 | DELETE    | /documents/:id      | delete |
 
 #### collection_actions
-设置允许的集合 action，例如：
-
+设置集合 action，例如：
+```.php
+$this->matchResources('documents', ['collection_actions' => ['index']]);
+```
 默认值：`['index', 'new', 'create']`
 
 #### element_actions
-设置允许的元素 action，例如：
-
+设置元素 action，例如：
+```.php
+$this->matchResource('sitemap', ['element_actions' => ['show']]);
+```
 默认值：`['show', 'edit', 'update', 'delete']`
 
 #### id
 通过正则表达式定义元素 id 匹配规则，例如：
-
-默认值 \d+
+```.php
+$this->matchResources('documents', ['id' => '[a-z]+']);
+```
+默认值：\d+
 
 #### 更多选项
 资源集合匹配选项支持 match 选项（methods 选项除外），例如：
