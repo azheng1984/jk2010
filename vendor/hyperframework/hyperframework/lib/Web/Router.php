@@ -462,8 +462,6 @@ abstract class Router implements RouterInterface {
         if ($options !== null) {
             $actionOptions = [
                 'actions',
-                'extra_actions',
-                'excluded_actions',
                 'default_actions'
             ];
             foreach ($actionOptions as $actionOption) {
@@ -531,38 +529,6 @@ abstract class Router implements RouterInterface {
                     }
                 }
             }
-        }
-        if (isset($options['extra_actions'])) {
-            foreach ($options['extra_actions'] as $key => $value) {
-                if (is_int($key)) {
-                    if (is_string($value) === false) {
-                        throw new RoutingException(
-                            'Action name must be a string, '
-                                . gettype($value) . ' given.'
-                        );
-                    }
-                    if (isset($defaultActions[$value])) {
-                        $actions[$value] = $defaultActions[$value];
-                    } else {
-                        $actions[$value] = [];
-                    }
-                } else {
-                    $actions[$key] = $value;
-                }
-            }
-            unset($options['extra_actions']);
-        }
-        if (isset($options['excluded_actions'])) {
-            foreach ($options['excluded_actions'] as $action) {
-                if (is_string($action) === false) {
-                    throw new RoutingException(
-                        'Action name must be a string, '
-                            . gettype($action) . ' given.'
-                    );
-                }
-                unset($actions[$action]);
-            }
-            unset($options['excluded_actions']);
         }
         if (count($actions) === 0) {
             return false;
@@ -683,11 +649,7 @@ abstract class Router implements RouterInterface {
         }
         if ($hasOptions) {
             $actionOptions = [
-                'actions',
-                'extra_collection_actions',
-                'extra_element_actions',
-                'excluded_actions',
-                'default_actions'
+                'default_actions', 'element_acitons', 'collection_actions'
             ];
             foreach ($actionOptions as $actionOption) {
                 if (isset($options[$actionOption])
@@ -695,29 +657,6 @@ abstract class Router implements RouterInterface {
                 ) {
                     throw new RoutingException(
                         "Option '$actionOption' must be an array, "
-                            . gettype($options[$actionOption]) . ' given.'
-                    );
-                }
-            }
-            $actionOptions = [
-                'element_acitons',
-                'collection_actions'
-            ];
-            foreach ($actionOptions as $actionOption) {
-                if (isset($options[$actionOption])
-                    && is_array($options[$actionOption]) === false
-                ) {
-                    if ($options[$actionOption] === false) {
-                        continue;
-                    }
-                    if ($options[$actionOption] === true) {
-                        throw new RoutingException(
-                            "Option '$actionOption' must be an array"
-                                . " or false, boolean 'true' given."
-                        );
-                    }
-                    throw new RoutingException(
-                        "Option '$actionOption' must be an array or false, "
                             . gettype($options[$actionOption]) . ' given.'
                     );
                 }
@@ -754,84 +693,55 @@ abstract class Router implements RouterInterface {
             }
         }
         if (isset($options['collection_actions'])) {
-            if ($options['collection_actions'] === false) {
-                if (isset($options['actions']) === false) {
-                    if (isset($options['element_acitons']) === false) {
-                        foreach ($defaultActions as $key => $value) {
-                            if (isset($value['belongs_to_element'])
-                                && $value['belongs_to_element'] === true
-                            ) {
-                                $options['actions'][$key] = $value;
-                            }
+            foreach ($options['collection_actions'] as $key => $value) {
+                if (is_int($key)) {
+                    if (isset($defaultActions[$value])) {
+                        $action = $defaultActions[$value];
+                        if (isset($action['belongs_to_element']) === true
+                            && $action['belongs_to_element'] === true
+                        ) {
+                            unset($options['collection_actions'][$key]);
+                            $options['collection_actions'][$value] = [];
                         }
                     }
                 }
-            } else {
-                if (isset($options['actions']) === false) {
-                    $options['actions'] = $options['collection_actions'];
-                } else {
-                    $options['actions'] = array_merge(
-                        $options['actions'], $options['collection_actions']
-                    );
+            }
+            $options['actions'] = $options['collection_actions'];
+        } else {
+            $options['actions'] = [];
+            foreach ($defaultActions as $key => $value) {
+                if (isset($value['belongs_to_element']) === false
+                    || $value['belongs_to_element'] !== true
+                ) {
+                    $actionName = $value;
+                    if (is_int($key)) {
+                        $options['actions'][] = $value;
+                    } else {
+                        $options['actions'][] = $key;
+                    }
                 }
             }
         }
         if (isset($options['element_actions'])) {
-            if ($options['element_actions'] === false) {
-                if (isset($options['actions']) === false) {
-                    if (isset($options['collection_acitons']) === false) {
-                        foreach ($defaultActions as $key => $value) {
-                            if (isset($value['belongs_to_element']) === false
-                                || $value['belongs_to_element'] !== true
-                            ) {
-                                $options['actions'][$key] = $value;
-                            }
-                        }
+            $actions = $this->convertElementActionsToCollectionActions(
+                $options['element_actions'], $defaultActions
+            );
+            $options['actions'] = array_merge(
+                $options['actions'], $actions
+            );
+        } else {
+            foreach ($defaultActions as $key => $value) {
+                if (isset($value['belongs_to_element'])
+                    && $value['belongs_to_element'] === true
+                ) {
+                    if (is_int($key)) {
+                        $options['actions'][] = $value;
+                    } else {
+                        $options['actions'][] = $key;
                     }
                 }
-            } else {
-                $actions = $this->convertElementActionsToCollectionActions(
-                    $options['element_actions'], $defaultActions
-                );
-                if (isset($options['actions']) === false) {
-                    $options['actions'] = $actions;
-                } else {
-                    $options['actions'] = array_merge(
-                        $options['actions'], $actions
-                    );
-                }
             }
         }
-        if (isset($options['actions'])) {
-            $options['actions'] =
-                $this->convertElementActionsToCollectionActions(
-                    $options['actions'], $defaultActions, true
-                );
-        }
-        unset($options['collection_actions']);
-        unset($options['element_actions']);
-        if (isset($options['extra_actions'])) {
-            throw new RoutingException(
-                "Option 'extra_actions' is not allowed."
-            );
-        }
-        if (isset($options['extra_collection_actions'])) {
-            $options['extra_actions'] = $options['extra_collection_actions'];
-        }
-        if (isset($options['extra_element_actions'])) {
-            $actions = $this->convertElementActionsToCollectionActions(
-                $options['extra_element_actions'], $defaultActions
-            );
-            if (isset($options['extra_actions'])) {
-                $options['extra_actions'] = array_merge(
-                    $options['extra_actions'], $actions
-                );
-            } else {
-                $options['extra_actions'] = $actions;
-            }
-        }
-        unset($options['extra_collection_actions']);
-        unset($options['extra_element_actions']);
         $options['default_actions'] =
             $this->convertElementActionsToCollectionActions(
                 $defaultActions, null, true

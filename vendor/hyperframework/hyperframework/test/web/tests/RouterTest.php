@@ -354,22 +354,6 @@ class RouterTest extends Base {
         $this->matchResources('document', [':id' => '\d+']);
     }
 
-    public function testMatchResourcesFailedWithDisableElementAction() {
-        $_SERVER['REQUEST_URI'] = '/documents/1';
-        $this->assertFalse($this->matchResources(
-            'documents', ['element_actions' => false]
-        ));
-    }
-
-    public function testMatchResourcesFailedWithDisableCollectionAction() {
-        $_SERVER['REQUEST_URI'] = '/documents';
-        $this->assertFalse(
-            $this->matchResources(
-                'documents', ['collection_actions' => false]
-            )
-        );
-    }
-
     public function testMatchResourcesWithCustomCollectionAction() {
         $_SERVER['REQUEST_URI'] = '/documents/preview';
         $this->assertTrue(
@@ -422,15 +406,6 @@ class RouterTest extends Base {
         );
     }
 
-    public function testMatchResourcesWithAddExtraCollectionAction() {
-        $_SERVER['REQUEST_URI'] = '/documents';
-        $this->assertTrue(
-            $this->matchResources(
-                'documents', ['extra_collection_actions' => ['preview']]
-            )
-        );
-    }
-
     /**
      * @expectedException InvalidArgumentException
      */
@@ -449,20 +424,6 @@ class RouterTest extends Base {
         $_SERVER['REQUEST_URI'] = '/document/preview';
         $this->assertTrue(
             $this->matchResource('document', ['actions' => ['preview']])
-        );
-    }
-
-    public function testMatchResourceWithExtraActions() {
-        $_SERVER['REQUEST_URI'] = '/document/preview';
-        $this->assertTrue(
-            $this->matchResource('document', ['extra_actions' => ['preview']])
-        );
-    }
-
-    public function testMatchResourceWithExcludedActions() {
-        $_SERVER['REQUEST_URI'] = '/document';
-        $this->assertFalse(
-            $this->matchResource('document', ['excluded_actions' => ['show']])
         );
     }
 

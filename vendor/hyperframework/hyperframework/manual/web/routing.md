@@ -29,7 +29,7 @@ execute 执行完成后，如果匹配状态等于 false，将会抛出 NotFound
 $this->match('segment');
 ```
 
-所有匹配规则都建议使用相对路径（默认基于根路径，可以通过 matchScope 修改）。如需匹配顶层路径，则使用 '/'，例如：
+匹配规则建议使用相对路径（默认基于根路径，可以通过 matchScope 修改）。如需匹配顶层路径，则使用 '/'，例如：
 
 ```.php
 $this->match('/');
@@ -135,7 +135,7 @@ $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 $this->matchResource('sitemap');
 ```
 
-此时 controller 等于 sitemap， action 对应关系：
+此时 controller 等于 sitemap， 默认 action 对应关系：
 
 | HTTP 方法 | 路径          | action |
 | --------- | --------------| ------ |
@@ -146,7 +146,7 @@ $this->matchResource('sitemap');
 | PUT/PATCH | /sitemap      | update |
 | DELETE    | /sitemap      | delete |
 
-### Action 规则定义
+### 自定义 Action 规则定义
 ```.php
 $actions = ['preview'];
 ```
@@ -166,22 +166,12 @@ $actions = ['preview' => ['extra' => $callback]];
 
 ### 资源匹配选项
 #### actions
-限定 action，例如：
+设置允许的 action，例如：
 ```.php
 $this->matchResource('sitemap', ['actions' => ['show']]);
 ```
 
-#### extra_actions
-附加 action，例如：
-```.php
-$this->matchResource('sitemap', ['extra_actions' => ['preview']]);
-```
-
-#### excluded_actions
-排除 action，例如：
-```.php
-$this->matchResource('sitemap', ['excluded_actions' => ['new']]);
-```
+默认值：`['show', 'new', 'edit', 'create', 'update', 'delete']`
 
 #### 更多选项
 资源匹配选项支持 match 选项，例如：
@@ -194,31 +184,38 @@ $this->matchResource('sitemap', ['extra' => $callback]);
 $this->matchResources('documents');
 ```
 
-此时 controller 等于 documents， action 对应关系：
+此时 controller 等于 documents。
+
+默认集合 action 对应关系：
 
 | HTTP 方法 | 路径                | action  |
 | --------- | ------------------- | ------ |
 | GET       | /documents          | index  |
-| GET       | /documents/:id      | show   |
 | GET       | /documents/new      | new    |
-| GET       | /documents/:id/edit | edit   |
 | POST      | /documents          | create |
+
+默认元素 action 对应关系：
+
+| HTTP 方法 | 路径                | action  |
+| --------- | ------------------- | ------ |
+| GET       | /documents/:id      | show   |
+| GET       | /documents/:id/edit | edit   |
 | PUT/PATCH | /documents/:id      | update |
 | DELETE    | /documents/:id      | delete |
 
-#### actions
-
 #### collection_actions
+设置允许的集合 action，例如：
+
+默认值：`['index', 'new', 'create']`
 
 #### element_actions
+设置允许的元素 action，例如：
 
-#### extra_collection_actions
-
-#### extra_element_actions
-
-#### excluded_actions
+默认值：`['show', 'edit', 'update', 'delete']`
 
 #### id
+通过正则表达式定义元素 id 匹配规则，例如：
+
 默认值 \d+
 
 #### 更多选项
@@ -228,16 +225,16 @@ $this->matchResources('documents', ['extra' => $callback]);
 ```
 
 ## Scope 匹配
-Scope 匹配用于限制路径前缀，只支持静态路径匹配，例如：
+Scope 匹配用于限制父路径，只支持静态路径匹配，例如：
 ```.php
 $this->matchScope('admin', function() {
-   if ($this->match('/')) return;
+   if ($this->match('settings')) return;
 });
 ```
 
 等价与：
 ```.php
-if ($this->match('admin')) return;
+if ($this->match('admin/settings')) return;
 ```
 
 ## 获取 App 对象
