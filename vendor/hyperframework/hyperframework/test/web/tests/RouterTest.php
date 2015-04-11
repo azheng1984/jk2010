@@ -459,10 +459,10 @@ class RouterTest extends Base {
         );
     }
 
-    public function testMatchResourceWithIgnoredActions() {
+    public function testMatchResourceWithExcludedActions() {
         $_SERVER['REQUEST_URI'] = '/document';
         $this->assertFalse(
-            $this->matchResource('document', ['ignored_actions' => ['show']])
+            $this->matchResource('document', ['excluded_actions' => ['show']])
         );
     }
 

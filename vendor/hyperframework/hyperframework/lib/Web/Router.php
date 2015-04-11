@@ -470,7 +470,7 @@ abstract class Router implements RouterInterface {
             $actionOptions = [
                 'actions',
                 'extra_actions',
-                'ignored_actions',
+                'excluded_actions',
                 'default_actions'
             ];
             foreach ($actionOptions as $actionOption) {
@@ -559,8 +559,8 @@ abstract class Router implements RouterInterface {
             }
             unset($options['extra_actions']);
         }
-        if (isset($options['ignored_actions'])) {
-            foreach ($options['ignored_actions'] as $action) {
+        if (isset($options['excluded_actions'])) {
+            foreach ($options['excluded_actions'] as $action) {
                 if (is_string($action) === false) {
                     throw new RoutingException(
                         'Action name must be a string, '
@@ -569,7 +569,7 @@ abstract class Router implements RouterInterface {
                 }
                 unset($actions[$action]);
             }
-            unset($options['ignored_actions']);
+            unset($options['excluded_actions']);
         }
         if (count($actions) === 0) {
             return false;
@@ -693,7 +693,7 @@ abstract class Router implements RouterInterface {
                 'actions',
                 'extra_collection_actions',
                 'extra_element_actions',
-                'ignored_actions',
+                'excluded_actions',
                 'default_actions'
             ];
             foreach ($actionOptions as $actionOption) {

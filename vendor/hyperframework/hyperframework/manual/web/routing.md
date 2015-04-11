@@ -158,7 +158,7 @@ $actions = ['preview' => [['GET'], 'preview']];
 
 第一个元素是字符串（定义单个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
 
-第二个参数是请求的路径限制，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么此 action 的路径是 sitemap/preview。
+第二个参数是请求的路径限制，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
 
 action 规则支持 match 选项，例如：
 ```.php
@@ -167,13 +167,22 @@ $actions = ['preview' => ['extra' => $callback]];
 
 ### 资源匹配选项
 #### actions
+限定 action，例如：
+```.php
+$this->matchResource('article', ['actions' => ['preview']]);
+```
 
 #### extra_actions
-```.html
+附加 action，例如：
+```.php
 $this->matchResource('article', ['extra_actions' => ['preview']]);
 ```
 
-#### ignored_actions
+#### excluded_actions
+排除 action，例如：
+```.php
+$this->matchResource('article', ['excluded_actions' => ['edit']]);
+```
 
 #### 更多选项
 资源匹配选项支持 match 选项，例如：
@@ -188,7 +197,7 @@ $this->matchResource('articles');
 
 此时 controller 等于 articles， action 对应关系：
 
-| HTTP 方法 | 路径               | action                 |
+| HTTP 方法 | 路径               | action  |
 | --------- | ------------------ | ------ |
 | GET       | /articles          | index  |
 | GET       | /articles/:id      | show   |
@@ -208,7 +217,7 @@ $this->matchResource('articles');
 
 #### extra_element_actions
 
-#### ignored_actions
+#### excluded_actions
 
 #### id
 默认值 \d+
