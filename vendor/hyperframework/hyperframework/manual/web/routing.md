@@ -137,7 +137,7 @@ $this->matchResource('sitemap');
 
 此时 controller 等于 sitemap， 默认 action 对应关系：
 
-| HTTP 方法 | 路径          | action |
+| http 方法 | 路径          | action |
 | --------- | --------------| ------ |
 | GET       | /sitemap      | show   |
 | GET       | /sitemap/new  | new    |
@@ -155,7 +155,7 @@ $actions = ['preview'];
 $actions = ['preview' => [['GET'], 'preview']];
 ```
 
-第一个元素可以是字符串（定义单个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
+第一个元素可以是字符串（定义单个 http 请求方法限制）或数组（定义多个 http 请求方法限制），默认值是 'GET'。
 
 第二个参数是 action 路径，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
 
@@ -205,7 +205,7 @@ $this->matchResources('documents');
 
 默认集合 action 对应关系：
 
-| HTTP 方法 | 路径                | action  |
+| http 方法 | 路径                | action  |
 | --------- | ------------------- | ------ |
 | GET       | /documents          | index  |
 | GET       | /documents/new      | new    |
@@ -213,7 +213,7 @@ $this->matchResources('documents');
 
 默认元素 action 对应关系：
 
-| HTTP 方法 | 路径                | action  |
+| http 方法 | 路径                | action  |
 | --------- | ------------------- | ------ |
 | GET       | /documents/:id      | show   |
 | GET       | /documents/:id/edit | edit   |
