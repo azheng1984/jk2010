@@ -155,7 +155,7 @@ $actions = ['preview'];
 $actions = ['preview' => [['GET'], 'preview']];
 ```
 
-第一个元素是字符串（定义单个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
+第一个元素可以是字符串（定义单个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
 
 第二个参数是 action 路径，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
 
@@ -227,7 +227,18 @@ $this->matchResources('documents');
 $this->matchResources('documents', ['extra' => $callback]);
 ```
 
-## 匹配 Scope
+## Scope 匹配
+Scope 匹配用于限制路径前缀，只支持静态路径匹配，例如：
+```.php
+$this->matchScope('admin', function() {
+   if ($this->match('/')) return;
+});
+```
+
+等价与：
+```.php
+if ($this->match('admin')) return;
+```
 
 ## 获取 App 对象
 ## 获取请求路径

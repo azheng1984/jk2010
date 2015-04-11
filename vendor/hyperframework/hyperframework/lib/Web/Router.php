@@ -16,7 +16,6 @@ abstract class Router implements RouterInterface {
     private $action;
     private $actionMethod;
     private $requestPath;
-    private $shouldMatchScope = false;
     private $isMatched = false;
 
     /**
@@ -126,12 +125,6 @@ abstract class Router implements RouterInterface {
      * @return bool
      */
     protected function match($pattern, array $options = null) {
-        if (is_string($pattern) === false) {
-            throw new InvalidArgumentException(
-                "Argument 'pattern' must be a string, "
-                    . gettype($pattern) . ' given.'
-            );
-        }
         if ($this->isMatched()) {
             throw new RoutingException('Already matched.');
         }
@@ -155,7 +148,7 @@ abstract class Router implements RouterInterface {
                 }
             }
         }
-        if (strpos($pattern, '#') !== false) {
+            if (strpos($pattern, '#') !== false) {
             throw new RoutingException(
                 "Invalid pattern '$pattern', character '#' is not allowed."
             );
@@ -229,7 +222,6 @@ abstract class Router implements RouterInterface {
             && $hasOptionalSegment === false
             && $hasWildcardSegment === false
             && $hasDynamicSegment === false
-            && $this->shouldMatchScope ===  false
         ) {
             if ($path === $pattern) {
                 if (isset($options['extra'])) {
@@ -326,11 +318,7 @@ abstract class Router implements RouterInterface {
                 ['#0', '#1', '#2', '#3'], ['\:', '\*', '\(', '\)'], $pattern
             );
         }
-        if ($this->shouldMatchScope) {
-            $pattern = '#^' . $pattern . '($|/(.*?)$)#';
-        } else {
-            $pattern = '#^' . $pattern . $formatPattern . '$#';
-        }
+        $pattern = '#^' . $pattern . $formatPattern . '$#';
         if (isset($GLOBALS['show'])) {
             echo $pattern;
         }
@@ -418,9 +406,6 @@ abstract class Router implements RouterInterface {
                     return false;
                 }
             }
-            if ($this->shouldMatchScope) {
-                return end($matches);
-            }
             $this->setMatches($matches);
             $this->setMatchStatus(true);
             return true;
@@ -434,23 +419,31 @@ abstract class Router implements RouterInterface {
      * @return bool
      */
     protected function matchScope($path, Closure $callback) {
-        if (is_string($path) === false) {
-            throw new InvalidArgumentException(
-                "Argument 'path' must be a string, "
-                    . gettype($path) . ' given.'
-            );
+        if ($this->isMatched()) {
+            throw new RoutingException('Already matched.');
         }
-        $this->shouldMatchScope = true;
-        $childPath = $this->match($path);
-        $this->shouldMatchScope = false;
-        if ($childPath === false) {
-            return false;
+        $path = trim($path, '/');
+        $orignalPath = $this->getRequestPath();
+        $requestPath = trim($orignalPath, '/');
+        $currentPath = '/';
+        if ($path !== '') {
+            $pathLength = strlen($path);
+            if (strncmp($path, $requestPath, $pathLength) === 0) {
+                $previousPathLength = strlen($requestPath);
+                if ($previousPathLength !== $pathLength) {
+                    if ($requestPath[$pathLength] !== '/') {
+                        return false;
+                    }
+                    $currentPath = substr($requestPath, $pathLength);
+                }
+            } else {
+                return false;
+            }
         }
-        $previousPath = $this->getRequestPath();
-        $this->setRequestPath(trim($childPath, '/'));
+        $this->setRequestPath($currentPath);
         $result = $callback();
         $this->parseResult($result);
-        $this->setRequestPath($previousPath);
+        $this->setRequestPath($orignalPath);
         return $this->isMatched();
     }
 
