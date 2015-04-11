@@ -2,7 +2,7 @@
 /* @var $this Hyperframework\Web\View */
 $this->setLayout('_layouts/main.html.php');
 $this->setBlock('content', function() {?>
-<h2>Hyperframework 是一个简单、专业的 PHP 框架，用于快速构建易于维护的应用和类库。</h2>
+<h2>Hyperframework 是一个简单、专业的 PHP 框架。</h2>
 <h2>Hyperframework 1.0.0 alpha 发布了！</h2>
 <div>此次发布包含 5 个模块</div>
 <h3>1. Web</h3>

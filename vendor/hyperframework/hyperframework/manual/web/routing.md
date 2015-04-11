@@ -135,7 +135,7 @@ $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 $this->matchResource('sitemap');
 ```
 
-此时 controller 等于 sitemap， 默认 action 规则：
+会使用预定义 action 规则：
 
 | Http 方法 | 路径          | action |
 | --------- | --------------| ------ |
@@ -145,6 +145,8 @@ $this->matchResource('sitemap');
 | POST      | /sitemap      | create |
 | PUT/PATCH | /sitemap      | update |
 | DELETE    | /sitemap      | delete |
+
+controller 等于 sitemap。
 
 ### 自定义 action
 ```.php
@@ -164,8 +166,8 @@ action 规则支持 match 选项（methods 选项除外），例如：
 $actions = ['preview' => ['extra' => $callback]];
 ```
 
-### 预定义 action
-预定义 action 包括：show、new、edit、create、update 和 delete。如果没有定义规则，预定义规则会被使用。
+### 使用预定义 action
+例如：
 ```.php
 $actions = ['show'];
 ```
@@ -201,24 +203,24 @@ $this->matchResource('sitemap', ['extra' => $callback]);
 $this->matchResources('documents');
 ```
 
-此时 controller 等于 documents。
+会使用预定义集合 action 规则：
 
-默认集合 action 规则：
-
-| Http 方法 | 路径                | action  |
+| Http 方法 | 路径                | action |
 | --------- | ------------------- | ------ |
 | GET       | /documents          | index  |
 | GET       | /documents/new      | new    |
 | POST      | /documents          | create |
 
-默认元素 action 规则：
+和预定义元素 action 规则：
 
-| Http 方法 | 路径                | action  |
+| Http 方法 | 路径                | action |
 | --------- | ------------------- | ------ |
 | GET       | /documents/:id      | show   |
 | GET       | /documents/:id/edit | edit   |
 | PUT/PATCH | /documents/:id      | update |
 | DELETE    | /documents/:id      | delete |
+
+controller 等于 documents。
 
 #### collection_actions
 设置集合 action，例如：
