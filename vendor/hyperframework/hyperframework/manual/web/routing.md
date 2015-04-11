@@ -24,7 +24,7 @@ return 'module_segment_1/module_segment_2/controller/action';
 execute 执行完成后，如果匹配状态等于 false，将会抛出 NotFoundException。
 
 ## 规则匹配
-### 匹配静态路径
+### 静态路径
 ```.php
 $this->match('segment');
 ```
@@ -35,15 +35,21 @@ $this->match('segment');
 $this->match('/');
 ```
 
-### 匹配动态段
+### 动态段
 ```.php
 $this->match(':segment');
 ```
 
-如果匹配，可以通过 getParam 获取对应的值，例如：
+如果匹配成功，可以通过 getParam 获取对应的值，例如：
 
 ```.php
 $this->getParam('segment');
+```
+
+:module、:controller 和 :action 动态段会被用来设置 module、controller 和 action，例如：
+
+```.php
+$this->match(':module/:controller/:action');
 ```
 
 ### 可选段
@@ -51,14 +57,7 @@ $this->getParam('segment');
 $this->match('required(/optional)');
 ```
 
-### 匹配 module、controller 和 action
-:module、:controller 和 :action 动态段会被用来设置 module、controller 和 action。
-
-```.php
-$this->match(':module/:controller/:action');
-```
-
-### 使用路径段通配符
+### 通配符
 ```.php
 $this->match('*wildcard');
 ```
@@ -131,7 +130,7 @@ $this->match(':segment', ['extra' => function($matches) {
 $this->match(':segment', ['extra' => [$callback1, $callback2]]);
 ```
 
-## 单个资源匹配
+## 资源匹配
 ```.php
 $this->matchResource('sitemap');
 ```
@@ -158,9 +157,9 @@ $actions = ['preview' => [['GET'], 'preview']];
 
 第一个元素是字符串（定义单个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
 
-第二个参数是请求的路径限制，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
+第二个参数是 action 路径，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
 
-action 规则支持 match 选项，例如：
+action 规则支持 match 选项（methods 选项除外），例如：
 ```.php
 $actions = ['preview' => ['extra' => $callback]];
 ```
@@ -169,7 +168,7 @@ $actions = ['preview' => ['extra' => $callback]];
 #### actions
 限定 action，例如：
 ```.php
-$this->matchResource('sitemap', ['actions' => ['preview']]);
+$this->matchResource('sitemap', ['actions' => ['show']]);
 ```
 
 #### extra_actions
@@ -181,7 +180,7 @@ $this->matchResource('sitemap', ['extra_actions' => ['preview']]);
 #### excluded_actions
 排除 action，例如：
 ```.php
-$this->matchResource('sitemap', ['excluded_actions' => ['edit']]);
+$this->matchResource('sitemap', ['excluded_actions' => ['new']]);
 ```
 
 #### 更多选项
@@ -192,7 +191,7 @@ $this->matchResource('sitemap', ['extra' => $callback]);
 
 ## 资源集合匹配
 ```.php
-$this->matchResource('documents');
+$this->matchResources('documents');
 ```
 
 此时 controller 等于 documents， action 对应关系：
@@ -223,10 +222,12 @@ $this->matchResource('documents');
 默认值 \d+
 
 #### 更多选项
-资源集合匹配选项支持 match 选项，例如：
+资源集合匹配选项支持 match 选项（methods 选项除外），例如：
 ```.php
 $this->matchResources('documents', ['extra' => $callback]);
 ```
+
+## 匹配 Scope
 
 ## 获取 App 对象
 ## 获取请求路径
