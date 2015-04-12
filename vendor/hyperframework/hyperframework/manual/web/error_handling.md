@@ -25,12 +25,12 @@ Config::set('hyperframework.web.error_view.root_path', 'error_views');
 ```.php
 Config::set('hyperframework.web.error_view.class', 'CustomErrorView');
 ```
- 默认值：Hyperframework\Web\ErrorView
+默认值：Hyperframework\Web\ErrorView
 
 NOTE：如果已经有响应输出，错误视图不会被显式。
 
 ## Http 异常
-Http 异常可以指定 http 响应的状态码和相关头部信息。例如，当 Hyperframework\Web\NotFoundException 异常的抛出时，http 响应的状态码会被设置成 404。 
+Http 异常可以指定 http 响应的状态码和相关头部信息。例如，当 Hyperframework\Web\NotFoundException 异常的抛出时，http 响应的状态码会被设置成 404。
 
 Http 异常默认不会被写入错误日志，可以通过配置开启：
 ```.php
@@ -55,4 +55,4 @@ NOTE: 当错误处理器开启 debug 时，输出会被缓存。
 ```.php
 Config::set('hyperframework.error_handler.debugger_class', 'CustomDebugger');
 ```
- 默认值：Hyperframework\Web\Debugger
+默认值：Hyperframework\Web\Debugger
