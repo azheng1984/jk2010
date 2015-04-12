@@ -44,7 +44,7 @@ Debugger 的作用：
 
 2. 分离内部/外部堆栈
 
-使用 debugger 需要开启错误处理器的 debug 配置：
+使用 debugger 需要通过配置开启错误处理器的 debug：
 ```.php
 Config::set('hyperframework.error_handler.debug', true);
 ```
