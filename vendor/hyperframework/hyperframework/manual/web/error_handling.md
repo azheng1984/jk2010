@@ -20,7 +20,6 @@ Config::set('hyperframework.web.error_view.root_path', 'error_views');
 | status_text | 状态文本       |
 | error       | 异常或错误对象 |
 
-
 可以通过配置修改错误视图类：
 ```.php
 Config::set('hyperframework.web.error_view.class', 'CustomErrorView');
