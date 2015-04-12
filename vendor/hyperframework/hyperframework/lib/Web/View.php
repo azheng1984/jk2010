@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class View extends ViewTemplate {
+class View extends AbstractView {
     /**
      * @param array $viewModel
      */

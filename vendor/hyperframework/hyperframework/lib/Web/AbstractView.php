@@ -10,7 +10,7 @@ use Hyperframework\Common\FileFullPathBuilder;
 use Hyperframework\Common\FileFullPathRecognizer;
 use Hyperframework\Common\FilePathCombiner;
 
-abstract class ViewTemplate implements ArrayAccess {
+abstract class AbstractView implements ArrayAccess {
     private $viewModel;
     private $loadFileFunction;
     private $blocks = [];

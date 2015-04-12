@@ -3,14 +3,14 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileFullPathBuilder;
-use Hyperframework\Web\Test\ViewTemplate;
+use Hyperframework\Web\Test\OpenView;
 use Hyperframework\Web\Test\TestCase as Base;
 
-class ViewTemplateTest extends Base {
+class AbstractViewTest extends Base {
     public function testRender() {
         $path = null;
         $tpl = null;
-        $tpl = new ViewTemplate(
+        $tpl = new OpenView(
             function() use (&$path, &$tpl) {$path = $tpl->getFile();}
         );
         $tpl->render('index/index.php');
@@ -27,7 +27,7 @@ class ViewTemplateTest extends Base {
         );
         $loadedPath = null;
         $tpl = null;
-        $tpl = new ViewTemplate(
+        $tpl = new OpenView(
             function() use (&$loadedPath, &$tpl) {
                 $loadedPath = $tpl->getFile();
             }
@@ -58,12 +58,12 @@ class ViewTemplateTest extends Base {
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testRenderByEmptyPath() {
-        $tpl = new ViewTemplate(function() {});
+        $tpl = new OpenView(function() {});
         $tpl->render(null);
     }
 
     public function testRenderBlock() {
-        $tpl = new ViewTemplate(function() {});
+        $tpl = new OpenView(function() {});
         $isRendered = false;
         $tpl->setBlock('name', function() use (&$isRendered) {
             $isRendered = true;
@@ -73,7 +73,7 @@ class ViewTemplateTest extends Base {
     }
 
     public function testRenderDefaultBlock() {
-        $tpl = new ViewTemplate(function() {});
+        $tpl = new OpenView(function() {});
         $isRendered = false;
         $tpl->renderBlock('undefined', function() use (&$isRendered) {
             $isRendered = true;
@@ -91,13 +91,13 @@ class ViewTemplateTest extends Base {
     }
 
     public function testIssetViewModelField() {
-        $tpl = new ViewTemplate(function() {}, ['name' => 'value']);
+        $tpl = new OpenView(function() {}, ['name' => 'value']);
         $this->assertTrue(isset($tpl['name']));
         $this->assertFalse(isset($tpl['unknown']));
     }
 
     public function testGetViewModelField() {
-        $tpl = new ViewTemplate(function() {}, ['name' => 'value']);
+        $tpl = new OpenView(function() {}, ['name' => 'value']);
         $this->assertSame('value', $tpl['name']);
     }
 
@@ -105,12 +105,12 @@ class ViewTemplateTest extends Base {
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testGetViewModelFieldWhichDoesNotExist() {
-        $tpl = new ViewTemplate(function() {}, []);
+        $tpl = new OpenView(function() {}, []);
         $tpl['unknown'];
     }
 
     public function testUnsetViewModelField() {
-        $tpl = new ViewTemplate(function() {}, ['name' => 'value']);
+        $tpl = new OpenView(function() {}, ['name' => 'value']);
         $this->assertTrue(isset($tpl['name']));
         unset($tpl['name']);
         $this->assertFalse(isset($tpl['name']));
@@ -120,7 +120,7 @@ class ViewTemplateTest extends Base {
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testRenderBlockWhichDoesNotExist() {
-        $tpl = new ViewTemplate(function() {});
+        $tpl = new OpenView(function() {});
         $tpl->renderBlock('undefined');
     }
 }

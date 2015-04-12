@@ -407,13 +407,6 @@ class RouterTest extends Base {
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testMatchResourceInvalidPattern() {
-        $this->matchResource(true);
-    }
-
-    /**
      * @expectedException Hyperframework\Web\RoutingException
      */
     public function testMatchResourceInvalidOption() {

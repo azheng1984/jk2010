@@ -29,7 +29,7 @@ Config::set('hyperframework.web.error_view.class', 'CustomErrorView');
 NOTE：如果已经有响应输出，错误视图不会被显式。
 
 ## Http 异常
-Http 异常可以指定 http 响应的状态码和相关头部信息。例如，当 Hyperframework\Web\NotFoundException 异常的抛出时，http 响应的状态码会被设置成 404。
+Http 异常可以指定 http 响应状态码和相关头部信息。例如，当 Hyperframework\Web\NotFoundException 异常的抛出时，http 响应状态码会被设置成 404。
 
 Http 异常默认不会被写入错误日志，可以通过配置开启：
 ```.php
@@ -41,7 +41,7 @@ Debugger 的作用：
 
 1. 分离错误信息和响应输出
 
-2. 分离内部/外部堆栈
+2. 分离内部/外部调用堆栈
 
 使用 debugger 需要开启错误处理器的 debug 配置：
 ```.php
