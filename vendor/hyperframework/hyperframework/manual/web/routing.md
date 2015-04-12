@@ -16,12 +16,12 @@ return 'controller/action';
 ```.php
 return 'module/controller/action';
 ```
-也可以超过三层，除了末尾两层，其他都是 module，例如：
+超过三层时，除末尾两层外，其他都是 module，例如：
 ```.php
 return 'module_segment_1/module_segment_2/controller/action';
 ```
 
-execute 执行完成后，如果匹配状态等于 false，将会抛出 NotFoundException。
+execute 执行完成后，如果匹配状态等于 false，同时也没有返回表示匹配成功的值，将会抛出 NotFoundException。
 
 ## 规则匹配
 ### 静态路径
@@ -250,7 +250,7 @@ $this->matchResources('documents', ['extra' => $callback]);
 ```
 
 ## Scope 匹配
-Scope 匹配用于限制父路径，只支持静态路径匹配，例如：
+Scope 匹配用于限制和修改根路径，根路径只能是静态路径，例如：
 ```.php
 $this->matchScope('admin', function() {
    if ($this->match('settings')) return;

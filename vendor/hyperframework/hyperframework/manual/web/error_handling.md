@@ -1,6 +1,58 @@
 # 错误处理
 ## 错误视图
+
+错误视图默认存放在视图文件夹的 _error 子文件夹中。
+
+可以通过配置修改错误视图根路径：
+```.php
+Config::set('hyperframework.web.error_view.root_path', 'error_views');
+```
+
+状态码对应的错误视图将会优先使用，例如，同时存在 error.php 和 404.php，响应状态是 404，那么 404.php 就会被使用。
+
+当错误视图不存在时，默认通过纯文本方式显示错误。
+
+错误视图模型包含以下字段：
+
+|    字段     |       说明     |
+| ----------- | -------------- |
+| status_code | 状态码         |
+| status_text | 状态文本       |
+| error       | 异常或错误对象 |
+
+
+可以通过配置修改错误视图类：
+```.php
+Config::set('hyperframework.web.error_view.class', 'CustomErrorView');
+```
+ 默认值：Hyperframework\Web\ErrorView
+
+NOTE：当已经有响应输出时，错误视图不会被显式。
+
 ## Http 异常
+http 异常可以指定 http 响应的状态码和相关头部信息。例如，当 Hyperframework\Web\NotFoundException 异常的抛出时，http 响应的状态码会被设置成 404。 
+
+可以通过配置关闭 Http 异常日志：
+```.php
+Config::set('hyperframework.error_handler.debug', true);
+```
+
 ## Debugger
-### 分离输出
-### 分离内部/外部文件
+Debugger 的作用：
+
+1. 分离错误信息和响应输出
+
+2. 分离内部/外部堆栈
+
+使用 debugger 需要开启错误处理器的 debug 配置：
+```.php
+Config::set('hyperframework.error_handler.debug', false);
+```
+
+NOTE: debug 开启时会缓存输出。
+
+可以通过配置修改 debugger 类：
+```.php
+Config::set('hyperframework.error_handler.debugger_class', 'CustomDebugger');
+```
+ 默认值：Hyperframework\Web\Debugger
