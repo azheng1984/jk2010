@@ -49,7 +49,7 @@ Debugger 的作用：
 Config::set('hyperframework.error_handler.debug', true);
 ```
 
-NOTE: 当错误处理器的 debug 开启时，响应输出会被缓存。
+NOTE: 当错误处理器的 debug 开启时，输出会被缓存。
 
 可以通过配置修改 debugger 类：
 ```.php
