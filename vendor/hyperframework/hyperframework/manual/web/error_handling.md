@@ -32,9 +32,9 @@ NOTE：当已经有响应输出时，错误视图不会被显式。
 ## Http 异常
 http 异常可以指定 http 响应的状态码和相关头部信息。例如，当 Hyperframework\Web\NotFoundException 异常的抛出时，http 响应的状态码会被设置成 404。 
 
-可以通过配置关闭 Http 异常日志：
+Http 异常默认不会被写入错误日志，可以通过配置开启：
 ```.php
-Config::set('hyperframework.error_handler.debug', true);
+Config::set('hyperframework.error_handler.log_http_exception', true);
 ```
 
 ## Debugger
