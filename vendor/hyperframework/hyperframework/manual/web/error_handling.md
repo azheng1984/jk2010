@@ -46,7 +46,7 @@ Debugger 的作用：
 
 使用 debugger 需要开启错误处理器的 debug 配置：
 ```.php
-Config::set('hyperframework.error_handler.debug', false);
+Config::set('hyperframework.error_handler.debug', true);
 ```
 
 NOTE: debug 开启时会缓存输出。
