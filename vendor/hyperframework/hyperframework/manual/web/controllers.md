@@ -15,7 +15,7 @@
 ## Action 方法
 控制器通过路由器的 getActionMethod 方法获取 action 方法名称。当 action 等于 show 时，action 方法默认是 doShowAction。
 
-Action 方法返回值默认会作为视图模型，所以必须 null 或返回数组。
+Action 方法返回值默认会作为视图模型，所以必须返回数组或 null。
 ## 设置视图
 控制器的 setView 函数接受一个视图对象或者字符串为参数，字符串表示视图路径，例如：
 ```.php
