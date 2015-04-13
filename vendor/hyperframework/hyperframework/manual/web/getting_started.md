@@ -77,6 +77,7 @@ class IndexController extends Controller {
 
 ```.php
 <?php
+/* @var $this Hyperframework\Web\View */
 echo $this['message'];
 ```
 

@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web\Test;
 
-use Hyperframework\Web\AbstractView;
+use Hyperframework\Web\ViewKernel;
 
-class OpenView extends AbstractView {
+class OpenView extends ViewKernel {
 }

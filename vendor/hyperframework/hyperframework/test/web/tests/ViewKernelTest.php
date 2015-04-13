@@ -6,34 +6,21 @@ use Hyperframework\Common\FileFullPathBuilder;
 use Hyperframework\Web\Test\OpenView;
 use Hyperframework\Web\Test\TestCase as Base;
 
-class AbstractViewTest extends Base {
+class ViewKernelTest extends Base {
     public function testRender() {
-        $path = null;
-        $tpl = null;
-        $tpl = new OpenView(
-            function() use (&$path, &$tpl) {$path = $tpl->getFile();}
-        );
-        $tpl->render('index/index.php');
-        $this->assertSame(dirname(__DIR__)
-            . DIRECTORY_SEPARATOR . 'views'  . DIRECTORY_SEPARATOR
-            . 'index' . DIRECTORY_SEPARATOR . 'index.php',
-        $path);
+        $this->expectOutputString('view: index/index');
+        $tpl = new OpenView;
+        $tpl->render('index/index.html.php');
     }
 
     public function testRenderByFullPath() {
+        $this->expectOutputString('view: index/index');
         $viewPath = FileFullPathBuilder::build(
             'views' . DIRECTORY_SEPARATOR . 'index'
-                . DIRECTORY_SEPARATOR . 'index.php'
+                . DIRECTORY_SEPARATOR . 'index.html.php'
         );
-        $loadedPath = null;
-        $tpl = null;
-        $tpl = new OpenView(
-            function() use (&$loadedPath, &$tpl) {
-                $loadedPath = $tpl->getFile();
-            }
-        );
+        $tpl = new OpenView;
         $tpl->render($viewPath);
-        $this->assertSame($viewPath, $loadedPath);
     }
 
     public function testRenderLayout() {
@@ -58,12 +45,12 @@ class AbstractViewTest extends Base {
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testRenderByEmptyPath() {
-        $tpl = new OpenView(function() {});
+        $tpl = new OpenView;
         $tpl->render(null);
     }
 
     public function testRenderBlock() {
-        $tpl = new OpenView(function() {});
+        $tpl = new OpenView;
         $isRendered = false;
         $tpl->setBlock('name', function() use (&$isRendered) {
             $isRendered = true;
@@ -73,7 +60,7 @@ class AbstractViewTest extends Base {
     }
 
     public function testRenderDefaultBlock() {
-        $tpl = new OpenView(function() {});
+        $tpl = new OpenView;
         $isRendered = false;
         $tpl->renderBlock('undefined', function() use (&$isRendered) {
             $isRendered = true;
@@ -91,13 +78,13 @@ class AbstractViewTest extends Base {
     }
 
     public function testIssetViewModelField() {
-        $tpl = new OpenView(function() {}, ['name' => 'value']);
+        $tpl = new OpenView(['name' => 'value']);
         $this->assertTrue(isset($tpl['name']));
         $this->assertFalse(isset($tpl['unknown']));
     }
 
     public function testGetViewModelField() {
-        $tpl = new OpenView(function() {}, ['name' => 'value']);
+        $tpl = new OpenView(['name' => 'value']);
         $this->assertSame('value', $tpl['name']);
     }
 
@@ -105,12 +92,12 @@ class AbstractViewTest extends Base {
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testGetViewModelFieldWhichDoesNotExist() {
-        $tpl = new OpenView(function() {}, []);
+        $tpl = new OpenView([]);
         $tpl['unknown'];
     }
 
     public function testUnsetViewModelField() {
-        $tpl = new OpenView(function() {}, ['name' => 'value']);
+        $tpl = new OpenView(['name' => 'value']);
         $this->assertTrue(isset($tpl['name']));
         unset($tpl['name']);
         $this->assertFalse(isset($tpl['name']));
@@ -120,7 +107,7 @@ class AbstractViewTest extends Base {
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testRenderBlockWhichDoesNotExist() {
-        $tpl = new OpenView(function() {});
+        $tpl = new OpenView;
         $tpl->renderBlock('undefined');
     }
 }

@@ -10,7 +10,7 @@ use Hyperframework\Common\FileFullPathBuilder;
 use Hyperframework\Common\FileFullPathRecognizer;
 use Hyperframework\Common\FilePathCombiner;
 
-abstract class AbstractView implements ArrayAccess {
+abstract class ViewKernel implements ArrayAccess {
     private $viewModel;
     private $loadFileFunction;
     private $blocks = [];
@@ -20,13 +20,12 @@ abstract class AbstractView implements ArrayAccess {
     private $layoutPath;
 
     /**
-     * @param Closure $loadFileFunction
      * @param array $viewModel
      */
-    public function __construct(
-        Closure $loadFileFunction, array $viewModel = null
-    ) {
-        $this->loadFileFunction = $loadFileFunction;
+    public function __construct(array $viewModel = null) {
+        $this->loadFileFunction = Closure::bind(function () {
+            require $this->getFile();
+        }, $this, null);
         $this->viewModel = $viewModel === null ? [] : $viewModel;
     }
 
