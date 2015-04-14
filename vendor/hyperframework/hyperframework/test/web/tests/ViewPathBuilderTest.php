@@ -13,7 +13,7 @@ class ViewPathBuilderTest extends Base {
 
     public function testBuildWithoutOutputFormat() {
         Config::set(
-            'hyperframework.web.view.path.include_output_format', false
+            'hyperframework.web.view.filename.include_output_format', false
         );
         $this->assertSame('index.php', ViewPathBuilder::build('index'));
     }

@@ -9,7 +9,7 @@ Config::set('hyperframework.web.view.root_path', 'custom_view_root');
 
 通过配置隐藏输出格式：
 ```.php
-Config::set('hyperframework.web.view.path.include_output_format', false);
+Config::set('hyperframework.web.view.filename.include_output_format', false);
 ```
 默认值：true
 
@@ -19,7 +19,7 @@ Config::set('hyperframework.web.view.default_output_format', 'xml');
 ```
 默认值：html
 
-通过配置修改是视图文件格式：
+通过配置修改视图文件格式：
 ```.php
 Config::set('hyperframework.web.view.format', 'tpl');
 ```

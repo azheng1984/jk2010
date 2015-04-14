@@ -12,7 +12,7 @@ class ViewPathBuilder {
     public static function build($name, $outputFormat = null) {
         $result = $name;
         if (Config::getBool(
-            'hyperframework.web.view.path.include_output_format', true
+            'hyperframework.web.view.filename.include_output_format', true
         )) {
             if ($outputFormat === null) {
                 $outputFormat = Config::getString(

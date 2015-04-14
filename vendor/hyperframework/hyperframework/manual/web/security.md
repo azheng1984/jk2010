@@ -13,6 +13,12 @@ $isEnabled = Hyperframework\Web\CsrfProtection::isEnabled();
 ```.php
 $tokenName = Hyperframework\Web\CsrfProtection::getTokenName();
 ```
+默认值：_csrf_token
+
+可以通过配置修改：
+```.php
+Config::set('hyperframework.web.csrf_protection.token_name', 'custom_token_name');
+```
 
 ### 获取 token 值
 ```.php
