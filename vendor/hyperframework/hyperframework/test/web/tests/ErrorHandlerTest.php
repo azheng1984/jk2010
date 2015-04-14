@@ -65,7 +65,7 @@ class ErrorHandlerTest extends Base {
     }
 
     public function testDisplayErrorUsingDebugger() {
-        Config::set('hyperframework.error_handler.debug', true);
+        Config::set('hyperframework.web.debugger.enable', true);
         $engine = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['executeDebugger'])->getMock();
         $engine->expects($this->once())->method('executeDebugger');
@@ -134,7 +134,7 @@ class ErrorHandlerTest extends Base {
     }
 
     public function testFlushInnerOutputBuffer() {
-        Config::set('hyperframework.error_handler.debug', true);
+        Config::set('hyperframework.web.debugger.enable', true);
         $engine = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['executeDebugger'])->getMock();
         $engine->expects($this->once())
@@ -157,9 +157,9 @@ class ErrorHandlerTest extends Base {
 
     public function testExecuteDebugger() {
         $this->expectOutputString('Hyperframework\Web\Test\Debugger::execute');
-        Config::set('hyperframework.error_handler.debug', true);
+        Config::set('hyperframework.web.debugger.enable', true);
         Config::set(
-            'hyperframework.error_handler.debugger_class',
+            'hyperframework.web.debugger.class',
             'Hyperframework\Web\Test\Debugger'
         );
         $handler = new ErrorHandler;

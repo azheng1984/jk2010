@@ -84,21 +84,21 @@
 默认值: Hyperframework\Web\ErrorView
 
 ## 记录 http 异常日志
-名称: hyperframework.error_handler.log_http_exception
+名称: hyperframework.web.log_http_exception
 
 类型: bool
 
 默认值: false
 
 ## 开启/关闭错误处理器的 debug 模式
-名称: hyperframework.error_handler.debug
+名称: hyperframework.web.debugger.enable
 
 类型: bool
 
 默认值: false
 
 ## Debugger 类
-名称: hyperframework.error_handler.debugger_class
+名称: hyperframework.web.debugger.class
 
 类型: string
 

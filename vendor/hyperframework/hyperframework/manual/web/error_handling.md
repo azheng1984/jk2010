@@ -33,7 +33,7 @@ Http 异常可以指定 http 响应状态码和相关头部信息。例如，当
 
 Http 异常默认不会被写入错误日志，可以通过配置开启：
 ```.php
-Config::set('hyperframework.error_handler.log_http_exception', true);
+Config::set('hyperframework.web.log_http_exception', true);
 ```
 
 ## Debugger
@@ -43,15 +43,15 @@ Debugger 的作用：
 
 2. 分离内部/外部调用堆栈
 
-使用 debugger 需要开启错误处理器的 debug 配置：
+使用 debugger 需要通过配置开启：
 ```.php
-Config::set('hyperframework.error_handler.debug', true);
+Config::set('hyperframework.web.debugger.enable', true);
 ```
 
-NOTE: 当错误处理器开启 debug 时，输出会被缓存。
+NOTE: 当 debugger 开启时，输出会被缓存。
 
 可以通过配置修改 debugger 类：
 ```.php
-Config::set('hyperframework.error_handler.debugger_class', 'CustomDebugger');
+Config::set('hyperframework.web.debugger.class', 'CustomDebugger');
 ```
 默认值：Hyperframework\Web\Debugger

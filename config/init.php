@@ -22,9 +22,9 @@ return array(
     'logging.log_level' => 'DEBUG',
     'logging.handler_class' => 'xx',
     'app_root_namespace' => __NAMESPACE__,
+    'web.debugger.enable' => true,
     '[hyperframework.error_handler]',
     'enable_logger' => true,
-    'debug' => true,
 //  'logger.log_stack_trace' => true,
 //  'log_handler.path' => 'php://output',
     /////////////////////////
