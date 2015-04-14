@@ -44,7 +44,7 @@ Hyperframework\Cli\App::run(__DIR__);
 ```
 
 赋予 run.php 可执行权限：
-```.html
+```.bash
 chmod 755 run.php
 ```
 
@@ -81,18 +81,18 @@ class Command extends Base {
 
 ## 显示帮助
 在项目根目录，输入：
-```.html
+```.bash
  ./run --help
 ```
 默认帮助信息将会被输出。
 
 ## 执行命令
 在项目根目录，输入：
-```.html
+```.bash
  ./run --opt content
 ```
 输出：
-```.html
+```.nohighlight
 opt: true
 arg: content
 ```
