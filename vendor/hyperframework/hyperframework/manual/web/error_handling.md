@@ -55,3 +55,12 @@ NOTE: 当 debugger 开启时，输出会被缓存。
 Config::set('hyperframework.web.debugger.class', 'CustomDebugger');
 ```
 默认值：Hyperframework\Web\Debugger
+
+可以通过配置限制 debugger 最大输出缓存大小：
+```.php
+Config::set('hyperframework.web.debugger.max_output_buffer_size', '10m');
+```
+默认不限制。详细信息参考 [配置](configuration)。
+
+## 其他
+由于 Web 模块的 ErrorHandler 类继承自 Common 模块的 ErrorHandler 类，通过 Common 模块文档中的 [错误处理](/cn/manual/common/error_handling) 获取更多相关信息。

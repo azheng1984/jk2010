@@ -90,7 +90,7 @@
 
 默认值: false
 
-## 开启/关闭错误处理器的 debug 模式
+## 开启/关闭 Debugger
 名称: hyperframework.web.debugger.enable
 
 类型: bool
@@ -107,6 +107,8 @@
 ## Debugger 最大输出缓存大小
 名称: hyperframework.web.debugger.max_output_buffer_size
 
-类型: string
+类型: int|string
 
 默认值: 无
+
+描述：当类型等于 int 时，单位是字节。当类型等于 string 时，支持 k、m 和 g 后缀，分别代表千字节、兆字节和千兆字节。

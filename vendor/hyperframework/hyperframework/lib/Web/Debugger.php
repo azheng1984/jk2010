@@ -408,14 +408,8 @@ class Debugger {
         $size = strtolower(trim(Config::get(
             'hyperframework.web.debugger.max_output_buffer_size'
         )));
-        if ($size === 'unlimited') {
-            return -1;
-        }
         if ($size === '') {
-            if ($shouldReturnText) {
-                return '10MB';
-            }
-            return 10 * 1024 * 1024;
+            return -1;
         }
         if ((int)$size <= 0) {
             return 0;
