@@ -10,3 +10,5 @@
 ## 获取/设置全局选项
 ## 获取/设置子命令名称
 ## 查询子命令是否存在
+## 其他
+由于 MultipleCommandApp 类继承自 Cli 模块的 App 类，通过 [单命令应用](single_command_applications) 获取更多相关信息。

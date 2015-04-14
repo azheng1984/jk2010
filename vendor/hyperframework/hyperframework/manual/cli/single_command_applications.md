@@ -14,3 +14,5 @@
 ## 魔术选项
 ### --help
 ### --version
+## 其他
+由于 Cli 模块的 App 类继承自 Common 模块的 App 类，通过 Common 模块文档中的 [App 基础](/cn/manual/common/app_basics) 获取更多相关信息。
