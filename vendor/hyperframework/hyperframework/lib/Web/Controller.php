@@ -121,28 +121,28 @@ abstract class Controller {
      * @return mixed
      */
     public function getView() {
-        if ($this->view === null) {
-            $router = $this->getRouter();
-            $module = (string)$router->getModule();
-            if ($module !== '') {
-                $name = $module . '/';
-            } else {
-                $name = '';
-            }
-            $controller = (string)$router->getController();
-            if ($controller === '') {
-                throw new UnexpectedValueException(
-                    'Controller cannot be empty.'
-                );
-            }
-            $action = (string)$router->getAction();
-            if ($action === '') {
-                throw new UnexpectedValueException('Action cannot be empty.');
-            }
-            $name .= $controller . '/' . $action;
-            return ViewPathBuilder::build($name, $this->getOutputFormat());
+        if ($this->view !== null) {
+            return $this->view;
         }
-        return $this->view;
+        $router = $this->getRouter();
+        $module = (string)$router->getModule();
+        if ($module !== '') {
+            $name = $module . '/';
+        } else {
+            $name = '';
+        }
+        $controller = (string)$router->getController();
+        if ($controller === '') {
+            throw new UnexpectedValueException(
+                'Controller cannot be empty.'
+            );
+        }
+        $action = (string)$router->getAction();
+        if ($action === '') {
+            throw new UnexpectedValueException('Action cannot be empty.');
+        }
+        $name .= $controller . '/' . $action;
+        return ViewPathBuilder::build($name, $this->getOutputFormat());
     }
 
     public function renderView() {

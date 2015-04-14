@@ -344,6 +344,7 @@ $this->redirect('/path');
 ```.php
 $this->redirect('/path', 301);
 ```
+重定向方法会调用应用的 quit 方法退出应用。
 ## 设置/获取匹配状态
 设置：
 ```.php

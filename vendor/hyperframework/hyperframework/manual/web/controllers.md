@@ -63,20 +63,32 @@ $format = $this->getOutputFormat();
 ```
 默认返回 format 路由参数。
 ## 路由参数
-获取单个路由参数
-
-获取所有路由参数
-
-查询路由参数是否存在
-
+获取单个路由参数：
+```.php
+$query = $this->getRouteParam('query');
+```
+获取全部路由参数：
+```.php
+$params = $this->getRouteParams();
+```
+查询路由参数是否存在：
+```.php
+$hasQuery = $this->hasRouteParam('query');
+```
 ## 获取 App 对象
 ```.php
 $app = $this->getApp();
 ```
 ## 重定向
 ```.php
-$this->redirect('/');
+$this->redirect('/path');
 ```
+默认使用 302 重定向，可以重写，例如：
+```.php
+$this->redirect('/path', 301);
+```
+重定向方法会调用控制器的 quit 方法退出控制器。
+
 ## 过滤器
 ### 前置过滤器
 在 action 处理逻辑之前执行，例如：
@@ -101,6 +113,8 @@ class MyFilter {
 }
 ```
 
+前置过滤器的执行顺序和添加顺序相同。
+
 如果过滤器返回 false，则 controller 的 quit 方法会被调用。
 
 ### 后置过滤器
@@ -110,7 +124,10 @@ $this->addAfterFilter(function() {
    $this->checkStatus();
 });
 ```
-addAfterFilter 也接受字符串，规则和 addBeforeFilter 函数相同。
+
+addAfterFilter 也接受字符串参数，规则和 addBeforeFilter 函数相同。
+
+后置过滤器的执行顺序和添加顺序相反。
 
 ### 环绕过滤器
 在 action 处理逻辑之前和之后（包括视图渲染）执行的逻辑，例如：
@@ -124,7 +141,7 @@ $this->addAroundFilter(function() {
 
 当 yield 操作被执行，如果没有异常发生，yield 之后的逻辑始终会被执行。
 
-环绕过滤器可以捕获 action 处理逻辑中的异常，例如：
+环绕过滤器可以捕获被环绕逻辑中的异常，例如：
 
 ```.php
 $this->addAroundFilter(function() {
@@ -136,10 +153,12 @@ $this->addAroundFilter(function() {
 });
 ```
 
-addAroundFilter 也接受字符串，规则和 addBeforeFilter 函数相同。
+addAroundFilter 也接受字符串参数，规则和 addBeforeFilter 函数相同。
 
 NOTE: 环绕过滤器需要 PHP 版本大于等于 5.5
 ## 退出控制器
 ```.php
 $this->quit();
 ```
+
+控制器的 quit 方法会调用 finalize 方法结束控制器逻辑，同时会调用应用的 quit 方法推出应用。
