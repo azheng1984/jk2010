@@ -23,7 +23,7 @@ $this->setView('index/index');
 ```
 此时默认加载的视图文件是 views/index/index.html.php。
 
-关于视图文件的详细设置参考 [视图](views)。
+关于视图文件路径的详细设置参考 [视图](views)。
 
 视图对象必须包含 render 方法，该方法允许接受 action 返回值作为参数，例如：
 ```.php

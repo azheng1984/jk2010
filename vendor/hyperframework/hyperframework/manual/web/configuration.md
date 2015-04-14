@@ -4,7 +4,7 @@
 
 类型: string
 
-默认值: Router
+默认值: Hyperframework\Web\Router
 
 ## 开启/关闭 http 请求方法重写
 名称: hyperframework.web.rewrite_request_method
