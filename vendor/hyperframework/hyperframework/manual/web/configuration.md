@@ -42,7 +42,7 @@
 默认值: views
 
 ## 视图文件名是否包含输出格式
-名称:hyperframework.web.view.path.include_output_format
+名称:hyperframework.web.view.filename.include_output_format
 
 类型: bool
 
