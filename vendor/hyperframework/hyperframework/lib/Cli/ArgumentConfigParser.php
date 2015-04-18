@@ -39,9 +39,7 @@ class ArgumentConfigParser {
             }
             if ($name === null) {
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommandName,
-                    null,
-                    "field 'name' is missing or equals null"
+                    $subcommandName, null, "field 'name' is missing"
                 ));
             }
             if (is_string($name) === false) {
@@ -53,7 +51,7 @@ class ArgumentConfigParser {
                         . " 'name' must be a string, $type given"
                 ));
             }
-            if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
+            if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $name) !== 1) {
                 throw new ConfigException(self::getErrorMessage(
                     $subcommandName,
                     null,

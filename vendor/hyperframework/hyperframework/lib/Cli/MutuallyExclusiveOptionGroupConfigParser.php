@@ -5,8 +5,7 @@ use Hyperframework\Common\ConfigException;
 
 class MutuallyExclusiveOptionGroupConfigParser {
     /**
-     * @param MutuallyExclusiveOptionGroupConfig[]
-     *            $mutuallyExclusiveOptionGroupConfigs
+     * @param array $mutuallyExclusiveOptionGroupConfigs
      * @param OptionConfig[] $optionConfigIndex
      * @param bool $isSubcommandEnabled
      * @param string $subcommandName

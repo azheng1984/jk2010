@@ -49,16 +49,6 @@ class OptionConfigParser {
                         $description = $value;
                 }
             }
-            if ($name === null && $shortName === null) {
-                throw new ConfigException(self::getErrorMessage(
-                    $isSubcommandEnabled,
-                    $subcommandName,
-                    null,
-                    null,
-                    "field 'name' or 'short_name'"
-                        . " is required and cannot equal null."
-                ));
-            }
             if ($name !== null) {
                 if (is_string($name) === false) {
                     $type = gettype($name);
