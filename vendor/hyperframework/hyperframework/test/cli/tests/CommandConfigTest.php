@@ -287,28 +287,12 @@ class CommandConfigTest extends Base {
     public function testCustomizeSubcommandConfigRootPath() {
         Config::set('hyperframework.cli.enable_subcommand', true);
         Config::set(
-            'hyperframework.cli.command_config_root_path',
-            'custom_command_config_root'
-        );
-        Config::set(
             'hyperframework.cli.subcommand_config_root_path',
             'custom_subcommands_config_root'
         );
         $commandConfig = new CommandConfig;
         $this->assertSame(
             ['root-path-test-child'], $commandConfig->getSubcommandNames()
-        );
-    }
-
-    public function testCustomizeCommandConfigRootPath() {
-        Config::set(
-            'hyperframework.cli.command_config_root_path',
-            'custom_command_config_root'
-        );
-        $commandConfig = new CommandConfig;
-        $this->assertSame(
-            ['name' => 'root-path-test'],
-            $this->callProtectedMethod($commandConfig, 'getAll')
         );
     }
 

@@ -460,20 +460,10 @@ class CommandConfig implements CommandConfigInterface {
             $configPath = Config::getString(
                 'hyperframework.cli.command_config_path', ''
             );
-            $isDefault = false;
             if ($configPath === '') {
-                $isDefault = true;
                 $configPath = 'command.php';
             }
-            if ($isDefault
-                || FileFullPathRecognizer::isFullPath($configPath) === false
-            ) {
-                $configRootPath = Config::getString(
-                    'hyperframework.cli.command_config_root_path', ''
-                );
-                if ($configRootPath !== '') {
-                    FilePathCombiner::prepend($configPath, $configRootPath);
-                }
+            if (FileFullPathRecognizer::isFullPath($configPath) === false) {
                 $configPath = ConfigFileFullPathBuilder::build($configPath);
             }
             return $configPath;
@@ -500,16 +490,6 @@ class CommandConfig implements CommandConfigInterface {
         );
         if ($folder === null) {
             $folder = 'subcommands';
-        }
-        $commandConfigRootPath = Config::getString(
-            'hyperframework.cli.command_config_root_path', ''
-        );
-        if ($commandConfigRootPath !== '') {
-            if (FileFullPathRecognizer::isFullPath($folder) === false) {
-                FilePathCombiner::prepend($folder, $commandConfigRootPath);
-            } else {
-                return $folder;
-            }
         }
         return ConfigFileFullPathBuilder::build($folder);
     }
