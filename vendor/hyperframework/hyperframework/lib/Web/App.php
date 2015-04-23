@@ -37,7 +37,7 @@ class App extends Base implements AppInterface {
                 $class = 'Router';
                 $namespace = Config::getAppRootNamespace();
                 if ($namespace !== '' && $namespace !== '\\') {
-                    NamespaceCombiner::prepend($class, $namespace);
+                    $class = NamespaceCombiner::combine($namespace, $class);
                 }
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(

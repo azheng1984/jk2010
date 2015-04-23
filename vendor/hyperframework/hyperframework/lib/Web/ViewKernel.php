@@ -43,8 +43,9 @@ abstract class ViewKernel implements ArrayAccess {
         if (FileFullPathRecognizer::isFullPath($path)) {
             $this->file = $path;
         } else {
-            FilePathCombiner::prepend($path, $this->getRootPath());
-            $this->file = $path;
+            $this->file = FilePathCombiner::combine(
+                $this->getRootPath(), $path
+            );
         }
         $this->pushLayout();
         try {

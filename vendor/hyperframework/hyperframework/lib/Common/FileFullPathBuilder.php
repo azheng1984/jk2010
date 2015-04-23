@@ -8,7 +8,7 @@ class FileFullPathBuilder {
      */
     public static function build($path) {
         if (FileFullPathRecognizer::isFullPath($path) === false) {
-            FilePathCombiner::prepend($path, static::getRootPath());
+            $path = FilePathCombiner::combine(static::getRootPath(), $path);
         }
         return $path;
     }

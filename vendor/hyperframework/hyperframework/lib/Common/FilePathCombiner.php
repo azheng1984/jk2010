@@ -3,12 +3,12 @@ namespace Hyperframework\Common;
 
 class FilePathCombiner {
     /**
-     * @param string &$target
-     * @param string $extra
+     * @param string $a
+     * @param string $b
      */
-    public static function append(&$target, $extra) {
-        $target = (string)$target;
-        $extra = (string)$extra;
+    public static function combine($a, $b) {
+        $target = (string)$a;
+        $extra = (string)$b;
         $separator = '/' === DIRECTORY_SEPARATOR ? '/' : '\/';
         if ($target !== '') {
             $target = rtrim($target, $separator);
@@ -20,20 +20,11 @@ class FilePathCombiner {
             $extra = trim($extra, $separator);
         }
         if ($extra === '') {
-            return;
+            return $target;
         }
         if ($target !== DIRECTORY_SEPARATOR) {
             $target .= DIRECTORY_SEPARATOR;
         }
-        $target .= $extra;
-    }
-
-    /**
-     * @param string &$target
-     * @param string $extra
-     */
-    public static function prepend(&$target, $extra) {
-        static::append($extra, $target);
-        $target = $extra;
+        return $target . $extra;
     }
 }

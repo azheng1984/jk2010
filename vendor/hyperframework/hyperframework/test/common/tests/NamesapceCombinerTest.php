@@ -4,33 +4,28 @@ namespace Hyperframework\Common;
 use Hyperframework\Common\Test\TestCase as Base;
 
 class NamesapceCombinerTest extends Base {
-    public function testAppend() {
+    public function testCombine() {
         $name = 'Namespace';
-        NamespaceCombiner::append($name, 'Class');
-        $this->assertSame('Namespace\Class', $name);
+        $this->assertSame(
+            'Namespace\Class', NamespaceCombiner::combine($name, 'Class')
+        );
     }
 
-    public function testAppendRootNamespace() {
+    public function testCombineRootNamespace() {
         $name= '\\';
-        NamespaceCombiner::append($name, 'Class');
+        $name = NamespaceCombiner::combine($name, 'Class');
         $this->assertSame('\Class', $name);
     }
 
-    public function testAppendNamespaceWhichEndsWithNamespaceSeparator() {
+    public function testCombineNamespaceWhichEndsWithNamespaceSeparator() {
         $name = 'Namespace\\';
-        NamespaceCombiner::append($name, 'Class');
+        $name = NamespaceCombiner::combine($name, 'Class');
         $this->assertSame('Namespace\Class', $name);
     }
 
-    public function testAppendEmpty() {
+    public function testCombineEmpty() {
         $name = 'Class';
-        NamespaceCombiner::append($name, null);
+        $name = NamespaceCombiner::combine($name, null);
         $this->assertSame('Class', $name);
-    }
-
-    public function testPrepend() {
-        $name = 'Class';
-        NamespaceCombiner::prepend($name, 'Namespace');
-        $this->assertSame('Namespace\Class', $name);
     }
 }

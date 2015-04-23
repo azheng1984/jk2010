@@ -87,7 +87,7 @@ abstract class Router implements RouterInterface {
         $class = str_replace(' ', '', $tmp) . 'Controller';
         $moduleNamespace = (string)$this->getModuleNamespace();
         if ($moduleNamespace !== '' && $moduleNamespace !== '\\') {
-            NamespaceCombiner::prepend($class, $moduleNamespace);
+            $class = NamespaceCombiner::combine($moduleNamespace, $class);
         }
         return $class;
     }
@@ -896,7 +896,9 @@ abstract class Router implements RouterInterface {
         $rootNamespace = 'Controllers';
         $appRootNamespace = Config::getAppRootNamespace();
         if ($appRootNamespace !== '' && $appRootNamespace !== '\\') {
-            NamespaceCombiner::prepend($rootNamespace, $appRootNamespace);
+            $rootNamespace = NamespaceCombiner::combine(
+                $appRootNamespace, $rootNamespace
+            );
         }
         $module = (string)$this->getModule();
         if ($module === '') {
@@ -906,8 +908,7 @@ abstract class Router implements RouterInterface {
             ' ', '\\', ucwords(str_replace('/', ' ', $module))
         );
         $namespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
-        NamespaceCombiner::prepend($namespace, $rootNamespace);
-        return $namespace;
+        return NamespaceCombiner::combine($rootNamespace, $namespace);
     }
 
     /**

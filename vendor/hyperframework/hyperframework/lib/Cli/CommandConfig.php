@@ -5,8 +5,6 @@ use ReflectionMethod;
 use LogicException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
-use Hyperframework\Common\FilePathCombiner;
-use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\ConfigFileFullPathBuilder;
 use Hyperframework\Common\FileFullPathRecognizer;
 use Hyperframework\Common\ConfigException;
@@ -342,7 +340,7 @@ class CommandConfig implements CommandConfigInterface {
         if ($subcommandName === null) {
             $class = 'Command';
             if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                NamespaceCombiner::prepend($class, $rootNamespace);
+                $class = NamespaceCombiner::combine($rootNamespace, $class);
             }
         } else {
             $tmp = ucwords(str_replace('-', ' ', $subcommandName));
@@ -350,9 +348,11 @@ class CommandConfig implements CommandConfigInterface {
             $namespace = 'Subcommands';
             $rootNamespace = Config::getAppRootNamespace();
             if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                NamespaceCombiner::prepend($namespace, $rootNamespace);
+                $namespace = NamespaceCombiner::combine(
+                    $rootNamespace, $namespace
+                );
             }
-            NamespaceCombiner::prepend($class, $namespace);
+            $class = NamespaceCombiner::combine($namespace, $class);
         }
         return $class;
     }

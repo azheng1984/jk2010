@@ -25,7 +25,7 @@ class ErrorView {
             if ($rootPath === '') {
                 $rootPath = 'views' . DIRECTORY_SEPARATOR . '_error';
             } else {
-                FilePathCombiner::append($rootPath, '_error');
+                $rootPath = FilePathCombiner::combine($rootPath, '_error');
             }
         }
         $files = [
@@ -35,7 +35,7 @@ class ErrorView {
         $rootPath = FileFullPathBuilder::build($rootPath);
         $path = null;
         foreach ($files as $file) {
-            FilePathCombiner::prepend($file, $rootPath);
+            $file = FilePathCombiner::combine($rootPath, $file);
             if (file_exists($file)) {
                 $path = $file;
                 break;
