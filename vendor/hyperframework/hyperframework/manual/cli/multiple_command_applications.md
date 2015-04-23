@@ -27,8 +27,36 @@ Cli 模块中的 MultipleCommandApp 类继承自同模块的 App 类，并通过
 和 command 配置相同。
 ### 互斥选项
 和 command 配置相同。
-## 获取/设置全局选项
-## 获取/设置子命令名称
-## 查询子命令是否存在
+## 全局命令选项
+设置全局命令选项：
+```.php
+$app->setGlobalOptions($options);
+```
+参数 $options 是一个数组，包含所有用户输入的选项值，字段名表示 option 的名称，如果 option 没有参数，默认值是 true。setGlobalOptions 是 protected 方法。
+
+获取所有全局命令选项：
+```.php
+$options = $app->getGlobalOptions();
+```
+获取单个全局命令选项：
+```.php
+$value = $app->getGlobalOption($name);
+```
+查询全局命令选项是否存在：
+```.php
+$hasOption = $app->hasGlobalOption($name);
+```
+## 子命令名称
+获取：
+```.php
+$name = $app->getSubcommandName();
+```
+设置：
+```.php
+$app->setSubcommandName($name);
+```
+## 用户输入的查询命令中是否包含子命令
+$hasSubcommand = $app->hasSubcommand();
+
 ## 其他
 由于 MultipleCommandApp 类继承自 Cli 模块的 App 类，通过 [单命令应用](single_command_applications) 获取更多相关信息。

@@ -1,5 +1,6 @@
 # 错误处理
 ## 错误视图
+当 web 应用发生致命错误，并且还没有响应输出，此时会显示错误视图。
 
 错误视图默认存放在视图文件夹的 _error 子文件夹中。
 
@@ -25,8 +26,6 @@ Config::set('hyperframework.web.error_view.root_path', 'error_views');
 Config::set('hyperframework.web.error_view.class', 'CustomErrorView');
 ```
 默认值：Hyperframework\Web\ErrorView
-
-NOTE：如果已经有响应输出，错误视图不会被显式。
 
 ## Http 异常
 Http 异常可以指定 http 响应状态码和相关头部信息。例如，当 Hyperframework\Web\NotFoundException 异常的抛出时，http 响应状态码会被设置成 404。

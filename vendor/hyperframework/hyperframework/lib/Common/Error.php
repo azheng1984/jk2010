@@ -62,6 +62,13 @@ class Error {
         return $this->line;
     }
 
+    public function isFatal() {
+        return ($this->severity & (
+            E_USER_ERROR | E_RECOVERABLE_ERROR | E_ERROR
+                | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR
+        )) !== 0;
+    }
+
     /**
      * @return string
      */

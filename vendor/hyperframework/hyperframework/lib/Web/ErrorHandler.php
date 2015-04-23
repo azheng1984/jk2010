@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\Error;
 use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {
@@ -19,10 +20,10 @@ class ErrorHandler extends Base {
 
     protected function handle() {
         $this->writeLog();
-        $this->displayError();
-    }
-
-    protected function displayError() {
+        $error =$this->getError();
+        if ($error instanceof Error && $error->isFatal() === false) {
+            return;
+        }
         if ($this->isDebuggerEnabled) {
             $this->flushInnerOutputBuffer();
             $outputBuffer = $this->getOutputBuffer();

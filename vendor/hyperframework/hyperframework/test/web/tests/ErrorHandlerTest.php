@@ -56,20 +56,12 @@ class ErrorHandlerTest extends Base {
         $this->callProtectedMethod($handler, 'handle');
     }
 
-    public function testHandle() {
-        $engine = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
-            ->setMethods(['writeLog', 'displayError'])->getMock();
-        $engine->expects($this->once())->method('writeLog');
-        $engine->expects($this->once())->method('displayError');
-        $this->callProtectedMethod($engine, 'handle');
-    }
-
     public function testDisplayErrorUsingDebugger() {
         Config::set('hyperframework.web.debugger.enable', true);
         $engine = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['executeDebugger'])->getMock();
         $engine->expects($this->once())->method('executeDebugger');
-        $this->callProtectedMethod($engine, 'displayError');
+        $this->callProtectedMethod($engine, 'handle');
         ob_end_flush();
     }
 
@@ -77,7 +69,7 @@ class ErrorHandlerTest extends Base {
         $engine = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['renderErrorView'])->getMock();
         $engine->expects($this->once())->method('renderErrorView');
-        $this->callProtectedMethod($engine, 'displayError');
+        $this->callProtectedMethod($engine, 'handle');
     }
 
     public function testRenderCustomErrorView() {
@@ -141,7 +133,7 @@ class ErrorHandlerTest extends Base {
             ->method('executeDebugger')->with('content');
         echo 'content';
         ob_start();
-        $this->callProtectedMethod($engine, 'displayError');
+        $this->callProtectedMethod($engine, 'handle');
         ob_end_flush();
     }
 
@@ -151,7 +143,7 @@ class ErrorHandlerTest extends Base {
             ->setMethods(['renderErrorView'])->getMock();
         ob_start();
         echo 'content';
-        $this->callProtectedMethod($engine, 'displayError');
+        $this->callProtectedMethod($engine, 'handle');
         $this->assertSame($level, ob_get_level());
     }
 
@@ -178,7 +170,7 @@ class ErrorHandlerTest extends Base {
         Response::setEngine($engine);
         $handler = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['renderErrorView'])->getMock();
-        $this->callProtectedMethod($handler, 'displayError');
+        $this->callProtectedMethod($handler, 'handle');
     }
 
     public function testRewriteHttpHeadersForHttpException() {
@@ -193,6 +185,6 @@ class ErrorHandlerTest extends Base {
         $handler = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['renderErrorView', 'getError'])->getMock();
         $handler->method('getError')->willReturn(new NotFoundException);
-        $this->callProtectedMethod($handler, 'displayError');
+        $this->callProtectedMethod($handler, 'handle');
     }
 }

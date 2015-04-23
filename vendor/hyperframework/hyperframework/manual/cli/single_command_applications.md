@@ -117,27 +117,35 @@ requried 字段必须是一个 bool 值，默认值是 false。
 $app->getCommandConfig();
 ```
 
-## 获取/设置命令参数
+## 命令参数
+设置命令参数：
 ```.php
 $app->setArguments($arguments);
 ```
 $arguments 是一个数组，包含所有用户输入的参数值。setArguments 是 protected 方法。
+
+获取命令参数：
 ```.php
 $app->getArguments();
 ```
-## 获取/设置命令选项
+## 命令选项
+设置命令选项：
 ```.php
 $app->setOptions($options);
 ```
-$options 是一个数组，包含所有用户输入的选项值，字段名表示 option 的名称，如果 option 没有参数，默认值是 true。setOptions 是 protected 方法。
+参数 $options 是一个数组，包含所有用户输入的选项值，字段名表示 option 的名称，如果 option 没有参数，默认值是 true。setOptions 是 protected 方法。
+
+获取所有命令选项：
 ```.php
-$app->getOptions();
+$options = $app->getOptions();
 ```
+获取单个命令选项：
 ```.php
-$app->getOption($name);
+$value = $app->getOption($name);
 ```
+查询命令选项是否存在：
 ```.php
-$app->hasOption($name);
+$hasOption = $app->hasOption($name);
 ```
 ## 魔术选项
 ### --help

@@ -64,7 +64,7 @@ class ErrorHandlerTest extends Base {
      */
     public function testConvertErrorToException() {
         Config::set(
-            'hyperframework.error_handler.error_throwing_bitmask', E_ALL
+            'hyperframework.error_handler.error_exception_bitmask', E_ALL
         );
         $this->registerErrorHandler();
         trigger_error('notice');
@@ -177,7 +177,7 @@ class ErrorHandlerTest extends Base {
 
     public function testThrowArgumentErrorException() {
         Config::set(
-            'hyperframework.error_handler.error_throwing_bitmask', E_ALL
+            'hyperframework.error_handler.error_exception_bitmask', E_ALL
         );
         $this->registerErrorHandler();
         try {

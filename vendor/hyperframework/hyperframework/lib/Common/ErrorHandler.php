@@ -122,8 +122,8 @@ class ErrorHandler {
      */
     private function handleException(Exception $exception) {
         if ($this->getError() === null) {
-           $this->error = $exception;
-           $this->handle();
+            $this->error = $exception;
+            $this->handle();
         }
         throw $exception;
     }
@@ -139,17 +139,6 @@ class ErrorHandler {
         if ($this->getError() !== null || (error_reporting() & $type) === 0) {
             return false;
         }
-        $errorThrowingBitmask = Config::getInt(
-            'hyperframework.error_handler.error_throwing_bitmask'
-        );
-        if ($errorThrowingBitmask === null) {
-            $errorThrowingBitmask =
-                E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED);
-        }
-        if (($type & $errorThrowingBitmask) === 0) {
-            return false;
-        }
-        $trace = null;
         $sourceTraceStartIndex = 2;
         if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
             $trace = debug_backtrace();
@@ -165,6 +154,19 @@ class ErrorHandler {
                     $sourceTraceStartIndex = 3;
                 }
             }
+        }
+        $errorExceptionBitmask = Config::getInt(
+            'hyperframework.error_handler.error_exception_bitmask'
+        );
+        if ($errorExceptionBitmask === null) {
+            $errorExceptionBitmask =
+                E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED);
+        }
+        if (($type & $errorExceptionBitmask) === 0) {
+            $this->error = new Error($type, $message, $file, $line);
+            $this->handle();
+            $this->error = null;
+            return false;
         }
         throw new ErrorException(
             $type, $message, $file, $line, $sourceTraceStartIndex
