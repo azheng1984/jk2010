@@ -6,12 +6,12 @@ use Hyperframework\Common\ConfigException;
 class OptionConfigParser {
     /**
      * @param array $configs
-     * @param bool $isSubcommandEnabled
+     * @param bool $isMultipleCommandMode
      * @param string $subcommandName
      * @return OptionConfig[]
      */
     public static function parse(
-        array $configs, $isSubcommandEnabled = false, $subcommandName = null
+        array $configs, $isMultipleCommandMode = false, $subcommandName = null
     ) {
         $result = [];
         $optionNames = [];
@@ -19,7 +19,7 @@ class OptionConfigParser {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::GetErrorMessage(
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     null,
                     null,
@@ -53,7 +53,7 @@ class OptionConfigParser {
                 if (is_string($name) === false) {
                     $type = gettype($name);
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         null,
                         null,
@@ -63,7 +63,7 @@ class OptionConfigParser {
                 }
                 if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $name) !== 1) {
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         null,
                         null,
@@ -72,7 +72,7 @@ class OptionConfigParser {
                 }
             } else {
                 throw new ConfigException(self::getErrorMessage(
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     null,
                     null,
@@ -83,7 +83,7 @@ class OptionConfigParser {
                 if (is_string($shortName) === false) {
                     $type = gettype($shortName);
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         $name,
                         null,
@@ -95,7 +95,7 @@ class OptionConfigParser {
                     || ctype_alnum($shortName) === false
                 ) {
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         $name,
                         null,
@@ -115,7 +115,7 @@ class OptionConfigParser {
                 && $name !== $shortName
             ) {
                 throw new ConfigException(self::getErrorMessage(
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     $name,
                     null,
@@ -125,7 +125,7 @@ class OptionConfigParser {
             if (is_bool($isRequired) === false) {
                 $type = gettype($isRequired);
                 throw new ConfigException(self::getErrorMessage(
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     $name,
                     $shortName,
@@ -136,7 +136,7 @@ class OptionConfigParser {
             if (is_bool($isRepeatable) === false) {
                 $type = gettype($isRepeatable);
                 throw new ConfigException(self::getErrorMessage(
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     $name,
                     $shortName,
@@ -149,7 +149,7 @@ class OptionConfigParser {
                 if (is_array($config['argument']) === false) {
                     $type = gettype($config['argument']);
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         $name,
                         $shortName,
@@ -159,7 +159,7 @@ class OptionConfigParser {
                 }
                 $argumentConfig = self::parseArgumentConfig(
                     $config['argument'],
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     $name,
                     $shortName
@@ -169,7 +169,7 @@ class OptionConfigParser {
                 if (is_string($description) === false) {
                     $type = gettype($description);
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         $name,
                         $shortName,
@@ -189,7 +189,7 @@ class OptionConfigParser {
             if ($name !== null) {
                 if (isset($optionNames[$name])) {
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         $name,
                         null,
@@ -201,7 +201,7 @@ class OptionConfigParser {
             if ($shortName !== null) {
                 if (isset($optionNames[$shortName])) {
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         null,
                         $shortName,
@@ -217,7 +217,7 @@ class OptionConfigParser {
 
     /**
      * @param array $config
-     * @param bool $isSubcommandEnabled
+     * @param bool $isMultipleCommandMode
      * @param string $subcommandName
      * @param string $optionName
      * @param string $optionShortName
@@ -225,7 +225,7 @@ class OptionConfigParser {
      */
     private static function parseArgumentConfig(
         array $config,
-        $isSubcommandEnabled,
+        $isMultipleCommandMode,
         $subcommandName,
         $optionName,
         $optionShortName
@@ -233,7 +233,7 @@ class OptionConfigParser {
         if (is_array($config) === false) {
             $type = gettype($config);
             throw new ConfigException(self::getErrorMessage(
-                $isSubcommandEnabled,
+                $isMultipleCommandMode,
                 $subcommandName,
                 $optionName,
                 $optionShortName,
@@ -257,7 +257,7 @@ class OptionConfigParser {
         }
         if ($name === null) {
             throw new ConfigException(self::getErrorMessage(
-                $isSubcommandEnabled,
+                $isMultipleCommandMode,
                 $subcommandName,
                 $optionName,
                 $optionShortName,
@@ -267,7 +267,7 @@ class OptionConfigParser {
         if (is_string($name) === false) {
             $type = gettype($name);
             throw new ConfigException(self::getErrorMessage(
-                $isSubcommandEnabled,
+                $isMultipleCommandMode,
                 $subcommandName,
                 $optionName,
                 $optionShortName,
@@ -277,7 +277,7 @@ class OptionConfigParser {
         }
         if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
             throw new ConfigException(self::getErrorMessage(
-                $isSubcommandEnabled,
+                $isMultipleCommandMode,
                 $subcommandName,
                 $optionName,
                 $optionShortName,
@@ -288,7 +288,7 @@ class OptionConfigParser {
         if (is_bool($isRequired) === false) {
             $type = gettype($isRequired);
             throw new ConfigException(self::getErrorMessage(
-                $isSubcommandEnabled,
+                $isMultipleCommandMode,
                 $subcommandName,
                 $optionName,
                 $optionShortName,
@@ -300,7 +300,7 @@ class OptionConfigParser {
             if (is_array($values) === false) {
                 $type = gettype($values);
                 throw new ConfigException(self::getErrorMessage(
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     $optionName,
                     $optionShortName,
@@ -312,7 +312,7 @@ class OptionConfigParser {
                 if (is_string($value) === false) {
                     $type = gettype($value);
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         $optionName,
                         $optionShortName,
@@ -322,7 +322,7 @@ class OptionConfigParser {
                 }
                 if (preg_match('/^[a-zA-Z0-9-_]+$/', $value) !== 1) {
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         $optionName,
                         $optionShortName,
@@ -336,7 +336,7 @@ class OptionConfigParser {
     }
 
     /**
-     * @param bool $isSubcommandEnabled
+     * @param bool $isMultipleCommandMode
      * @param string $subcommandName
      * @param string $name
      * @param string $shortName
@@ -344,10 +344,10 @@ class OptionConfigParser {
      * @return string
      */
     private static function getErrorMessage(
-        $isSubcommandEnabled, $subcommandName, $name, $shortName, $extra
+        $isMultipleCommandMode, $subcommandName, $name, $shortName, $extra
     ) {
         if ($subcommandName === null) {
-            if ($isSubcommandEnabled) {
+            if ($isMultipleCommandMode) {
                 $result = 'Global command';
             } else {
                 $result = 'Command';

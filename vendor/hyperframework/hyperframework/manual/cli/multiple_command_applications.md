@@ -20,13 +20,13 @@ Cli 模块中的 MultipleCommandApp 类继承自同模块的 App 类，并通过
 ];
 ```
 ### 参数
-和 command 配置相同。
+和单命令应用命令参数配置相同。
 ### 选项
-和 command 配置相同。
+和单命令应用命令选项配置相同。
 ### 类
-和 command 配置相同。
+和单命令应用命令类配置相同。
 ### 互斥选项
-和 command 配置相同。
+和单命令应用命令互斥选项配置相同。
 ## 全局命令选项
 设置全局命令选项：
 ```.php
@@ -55,7 +55,7 @@ $name = $app->getSubcommandName();
 ```.php
 $app->setSubcommandName($name);
 ```
-## 用户输入的查询命令中是否包含子命令
+## 查询用户输入的命令中是否包含子命令
 $hasSubcommand = $app->hasSubcommand();
 
 ## 其他

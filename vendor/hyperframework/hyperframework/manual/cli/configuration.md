@@ -13,12 +13,14 @@
 
 默认值: Hyperframework\Cli\Help
 
-## 启用子命令
-名称: hyperframework.cli.enable_subcommand
+## 启用/关闭多命令模式
+名称: hyperframework.cli.multiple_commands
 
 类型: bool
 
 默认值: false
+
+NOTE: Hyperframework\Cli\MultipleCommandApp 类的构造函数会把此配置设置成 true。
 
 ## 命令配置路径
 名称: hyperframework.cli.command_config_path

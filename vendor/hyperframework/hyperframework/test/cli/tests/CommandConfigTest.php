@@ -6,7 +6,7 @@ use Hyperframework\Cli\Test\TestCase as Base;
 
 class CommandConfigTest extends Base {
     public function testGetGlobalCommandArgumentConfigs() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         $config = new CommandConfig;
         $this->assertSame([], $config->getArgumentConfigs());
     }
@@ -65,7 +65,7 @@ class CommandConfigTest extends Base {
     }
 
     public function testGetArgumentConfigsOfSubcommand() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         $config = new CommandConfig;
         $argumentConfigs = $config->getArgumentConfigs('child');
         $config = $argumentConfigs[0];
@@ -229,12 +229,12 @@ class CommandConfigTest extends Base {
         $this->assertSame('1.0.0', $commandConfig->getVersion());
     }
 
-    public function testIsSubcommandEnabled() {
+    public function testisMultipleCommandMode() {
         $commandConfig = new CommandConfig;
-        Config::set('hyperframework.cli.enable_subcommand', true);
-        $this->assertTrue($commandConfig->isSubcommandEnabled());
-        Config::set('hyperframework.cli.enable_subcommand', false);
-        $this->assertTrue($commandConfig->isSubcommandEnabled());
+        Config::set('hyperframework.cli.multiple_commands', true);
+        $this->assertTrue($commandConfig->isMultipleCommandMode());
+        Config::set('hyperframework.cli.multiple_commands', false);
+        $this->assertTrue($commandConfig->isMultipleCommandMode());
     }
 
     public function testHasSubcommand() {
@@ -245,7 +245,7 @@ class CommandConfigTest extends Base {
     }
 
     public function testGetSubcommandNames() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         $commandConfig = new CommandConfig;
         $this->assertSame(2, count($commandConfig->getSubcommandNames()));
     }
@@ -285,7 +285,7 @@ class CommandConfigTest extends Base {
     }
 
     public function testCustomizeSubcommandConfigRootPath() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         Config::set(
             'hyperframework.cli.subcommand_config_root_path',
             'custom_subcommands_config_root'

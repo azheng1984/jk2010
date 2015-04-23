@@ -7,14 +7,14 @@ class MutuallyExclusiveOptionGroupConfigParser {
     /**
      * @param array $mutuallyExclusiveOptionGroupConfigs
      * @param OptionConfig[] $optionConfigIndex
-     * @param bool $isSubcommandEnabled
+     * @param bool $isMultipleCommandMode
      * @param string $subcommandName
      * @return MutuallyExclusiveOptionGroupConfig[]
      */
     public static function parse(
         array $mutuallyExclusiveOptionGroupConfigs,
         array $optionConfigIndex,
-        $isSubcommandEnabled = false,
+        $isMultipleCommandMode = false,
         $subcommandName = null
     ) {
         $result = [];
@@ -23,7 +23,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::getErrorMessage(
-                    $isSubcommandEnabled,
+                    $isMultipleCommandMode,
                     $subcommandName,
                     "config must be an array, $type given"
                 ));
@@ -36,7 +36,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                         if (is_bool($value) === false) {
                             $type = gettype($value);
                             throw new ConfigException(self::getErrorMessage(
-                                $isSubcommandEnabled,
+                                $isMultipleCommandMode,
                                 $subcommandName,
                                 "field 'required' must be a boolean, "
                                     . "$type given"
@@ -49,7 +49,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 if (is_string($value) === false) {
                     $type = gettype($value);
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         "option must be a string, $type given"
                     ));
@@ -57,7 +57,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 $length = strlen($value);
                 if (isset($optionConfigIndex[$value]) === false) {
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         "option '$value' is not defined"
                     ));
@@ -70,7 +70,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 }
                 if (in_array($optionConfig, $includedOptionConfigs, true)) {
                     throw new ConfigException(self::getErrorMessage(
-                        $isSubcommandEnabled,
+                        $isMultipleCommandMode,
                         $subcommandName,
                         "option '$value' cannot belong to multiple groups"
                     ));
@@ -88,16 +88,16 @@ class MutuallyExclusiveOptionGroupConfigParser {
     }
 
     /**
-     * @param bool $isSubcommandEnabled
+     * @param bool $isMultipleCommandMode
      * @param string $subcommandName
      * @param string $extra
      * @return string
      */
     private static function getErrorMessage(
-        $isSubcommandEnabled, $subcommandName, $extra
+        $isMultipleCommandMode, $subcommandName, $extra
     ) {
         if ($subcommandName === null) {
-            if ($isSubcommandEnabled) {
+            if ($isMultipleCommandMode) {
                 $result = 'Global command';
             } else {
                 $result = 'Command';

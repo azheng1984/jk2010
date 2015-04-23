@@ -54,7 +54,7 @@ interface CommandConfigInterface {
     /**
      * @return bool
      */
-    function isSubcommandEnabled();
+    function isMultipleCommandMode();
 
     /**
      * @param string $subcommandName

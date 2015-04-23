@@ -16,7 +16,7 @@ class CommandParser {
         $result = [];
         $subcommandName = null;
         $optionType = null;
-        if ($commandConfig->isSubcommandEnabled()) {
+        if ($commandConfig->isMultipleCommandMode()) {
             $result['global_options'] = [];
             $optionType = 'global_options';
         } else {
@@ -24,7 +24,7 @@ class CommandParser {
             $result['arguments'] = [];
             $optionType = 'options';
         }
-        $isGlobal = $commandConfig->isSubcommandEnabled();
+        $isGlobal = $commandConfig->isMultipleCommandMode();
         $count = count($argv);
         $isArgument = false;
         $arguments = [];
@@ -259,7 +259,7 @@ class CommandParser {
         array $options = null,
         CommandConfigInterface $commandConfig
     ) {
-        if ($commandConfig->isSubcommandEnabled()) {
+        if ($commandConfig->isMultipleCommandMode()) {
             if ($globalOptions !== null) {
                 foreach (['help', 'version'] as $optionName) {
                     if (isset($globalOptions[$optionName])) {

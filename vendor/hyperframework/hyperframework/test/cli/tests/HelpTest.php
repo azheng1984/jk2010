@@ -23,7 +23,7 @@ class HelpTest extends Base {
             'hyperframework.cli.subcommand_config_root_path',
             'subcommands_for_help_test'
         );
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         $this->expectOutputString(
             'Usage: test [-t] [-h|--help] [--version] <subcommand>' . PHP_EOL
             . PHP_EOL . 'Subcommands:' . PHP_EOL
@@ -43,7 +43,7 @@ class HelpTest extends Base {
             'hyperframework.cli.subcommand_config_root_path',
             'subcommands_for_help_test'
         );
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         $this->expectOutputString(
             'Usage: test child [-c] [-h|--help] <arg>' . PHP_EOL
         );

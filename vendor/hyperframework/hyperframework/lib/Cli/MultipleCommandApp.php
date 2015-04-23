@@ -15,7 +15,7 @@ class MultipleCommandApp extends App implements MultipleCommandAppInterface {
      */
     public function __construct($appRootPath) {
         CommonApp::__construct($appRootPath);
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         $elements = $this->parseCommand();
         if (isset($elements['global_options'])) {
             $this->setGlobalOptions($elements['global_options']);

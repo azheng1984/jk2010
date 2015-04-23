@@ -20,7 +20,7 @@ class CommandConfig implements CommandConfigInterface {
     private $optionConfigIndex;
     private $mutuallyExclusiveOptionGroupConfigs;
     private $argumentConfigs;
-    private $isSubcommandEnabled;
+    private $isMultipleCommandMode;
     private $subcommandNames;
     private $subcommandConfigs = [];
     private $subcommandClasses = [];
@@ -41,7 +41,7 @@ class CommandConfig implements CommandConfigInterface {
         } elseif ($this->argumentConfigs !== null) {
             return $this->argumentConfigs;
         }
-        if ($subcommandName === null && $this->isSubcommandEnabled()) {
+        if ($subcommandName === null && $this->isMultipleCommandMode()) {
             $this->argumentConfigs = [];
             return $this->argumentConfigs;
         }
@@ -239,13 +239,13 @@ class CommandConfig implements CommandConfigInterface {
     /**
      * @return bool
      */
-    public function isSubcommandEnabled() {
-        if ($this->isSubcommandEnabled === null) {
-            $this->isSubcommandEnabled = Config::getBool(
-                'hyperframework.cli.enable_subcommand', false
+    public function isMultipleCommandMode() {
+        if ($this->isMultipleCommandMode === null) {
+            $this->isMultipleCommandMode = Config::getBool(
+                'hyperframework.cli.multiple_commands', false
             );
         }
-        return $this->isSubcommandEnabled;
+        return $this->isMultipleCommandMode;
     }
 
     /**
@@ -260,7 +260,7 @@ class CommandConfig implements CommandConfigInterface {
      * @return string[]
      */
     public function getSubcommandNames() {
-        if ($this->isSubcommandEnabled() === false) {
+        if ($this->isMultipleCommandMode() === false) {
             return [];
         }
         if ($this->subcommandNames === null) {
@@ -431,7 +431,7 @@ class CommandConfig implements CommandConfigInterface {
      */
     protected function parseOptionConfigs($configs, $subcommandName = null) {
         return OptionConfigParser::parse(
-            $configs, $this->isSubcommandEnabled(), $subcommandName
+            $configs, $this->isMultipleCommandMode(), $subcommandName
         );
     }
 
@@ -446,7 +446,7 @@ class CommandConfig implements CommandConfigInterface {
         return MutuallyExclusiveOptionGroupConfigParser::parse(
             $configs,
             $this->getOptionConfigIndex($subcommandName),
-            $this->isSubcommandEnabled(),
+            $this->isMultipleCommandMode(),
             $subcommandName
         );
     }
@@ -533,7 +533,7 @@ class CommandConfig implements CommandConfigInterface {
      */
     private function getErrorMessage($subcommandName, $extra) {
         if ($subcommandName === null) {
-            if ($this->isSubcommandEnabled()) {
+            if ($this->isMultipleCommandMode()) {
                 $result = 'Global command';
             } else {
                 $result = 'Command';
@@ -557,7 +557,7 @@ class CommandConfig implements CommandConfigInterface {
             $result .=
                  "default argument configs of subcommand '$subcommandName'";
         } else {
-            if ($this->isSubcommandEnabled()) {
+            if ($this->isMultipleCommandMode()) {
                 $result .= 'default argument configs of global command';
             } else {
                 $result .= 'command default argument configs';

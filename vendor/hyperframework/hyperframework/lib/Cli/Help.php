@@ -13,7 +13,7 @@ class Help {
      */
     public function __construct($app) {
         $this->commandConfig = $app->getCommandConfig();
-        if ($this->commandConfig->isSubcommandEnabled()) {
+        if ($this->commandConfig->isMultipleCommandMode()) {
             $this->subcommandName = $app->getSubcommandName();
         }
     }
@@ -23,7 +23,7 @@ class Help {
         if ($this->hasOptionDescription()) {
             $this->renderOptions();
         }
-        if ($this->commandConfig->isSubcommandEnabled()
+        if ($this->commandConfig->isMultipleCommandMode()
             && $this->subcommandName === null
         ) {
             $this->renderSubcommands();
@@ -51,7 +51,7 @@ class Help {
                 $this->renderUsageElement('[options]');
             }
         }
-        if ($this->commandConfig->isSubcommandEnabled()
+        if ($this->commandConfig->isMultipleCommandMode()
             && $this->subcommandName === null
         ) {
             $this->renderUsageElement('<subcommand>');

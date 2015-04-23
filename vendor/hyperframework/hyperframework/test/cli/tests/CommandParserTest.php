@@ -16,7 +16,7 @@ class CommandParserTest extends Base {
     }
 
     public function testParseSubcommand() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         $this->assertSame(
             [
                 'global_options' => [],
@@ -32,7 +32,7 @@ class CommandParserTest extends Base {
      * @expectedException Hyperframework\Cli\CommandParsingException
      */
     public function testParseWhenSubcommandDoesNotExist() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         CommandParser::parse(new CommandConfig, ['run', 'unknown-subcommand']);
     }
 
@@ -40,7 +40,7 @@ class CommandParserTest extends Base {
      * @expectedException Hyperframework\Cli\CommandParsingException
      */
     public function testParseWhenGlobalOptionNameIsInvalid() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
+        Config::set('hyperframework.cli.multiple_commands', true);
         CommandParser::parse(new CommandConfig, ['run', '--', 'child', 'arg']);
     }
 
