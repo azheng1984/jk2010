@@ -8,13 +8,6 @@ abstract class DbActiveRecord {
     private $row;
 
     /**
-     * @param array $row
-     */
-    public function __construct(array $row = []) {
-        $this->setRow($row);
-    }
-
-    /**
      * @param array|string $where
      * @param array $params
      * @return static
@@ -225,6 +218,20 @@ abstract class DbActiveRecord {
     }
 
     /**
+     * @return string
+     */
+    public static function getTableName() {
+        $class = get_called_class();
+        if (isset(self::$tableNames[$class]) === false) {
+            $position = strrpos($class, '\\');
+            if ($position !== false) {
+                self::$tableNames[$class] = substr($class, $position + 1);
+            }
+        }
+        return self::$tableNames[$class];
+    }
+
+    /**
      * @return array
      */
     protected function getRow() {
@@ -269,20 +276,6 @@ abstract class DbActiveRecord {
      */
     protected function removeColumn($name) {
         unset($this->row[$name]);
-    }
-
-    /**
-     * @return string
-     */
-    protected static function getTableName() {
-        $class = get_called_class();
-        if (isset(self::$tableNames[$class]) === false) {
-            $position = strrpos($class, '\\');
-            if ($position !== false) {
-                self::$tableNames[$class] = substr($class, $position + 1);
-            }
-        }
-        return self::$tableNames[$class];
     }
 
     /**

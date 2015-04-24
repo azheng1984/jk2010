@@ -4,6 +4,10 @@ namespace Hyperframework\Db\Test;
 use Hyperframework\Db\DbActiveRecord as Base;
 
 class Document extends Base {
+    public function __construct(array $row = []) {
+        $this->setRow($row);
+    }
+
     public function getId() {
         return $this->getColumn('id');
     }

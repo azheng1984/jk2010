@@ -205,10 +205,7 @@ class DbActiveRecordTest extends Base {
 
     public function testGetTableName() {
         $doc = new Document;
-        $this->assertSame(
-            'Document',
-            $this->callProtectedMethod($doc, 'getTableName')
-        );
+        $this->assertSame('Document', $doc->getTableName());
     }
 
     public function testSetRow() {
