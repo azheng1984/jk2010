@@ -135,6 +135,9 @@ abstract class ViewKernel implements ArrayAccess {
      */
     public function offsetGet($offset) {
         if (isset($this->viewModel[$offset]) === false) {
+            if (array_key_exists($offset, $this->viewModel)) {
+                return;
+            }
             throw new ViewException(
                 "View model field '$offset' is not defined."
             );
