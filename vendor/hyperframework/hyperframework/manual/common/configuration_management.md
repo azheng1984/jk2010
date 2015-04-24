@@ -1,4 +1,5 @@
 # 配置管理
+Config 类位于 Hyperframework\Common 命名空间下。
 ## 获取配置项
 ```.php
 $value = Config::get($name);

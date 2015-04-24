@@ -5,7 +5,7 @@
 可以通过配置修改需要转换的错误类型，例如：
 
 ```.php
-Config::set('hyperframework.error_handler.error_exception_bitmask', E_ALL);
+Hyperframework\Common\Config::set('hyperframework.error_handler.error_exception_bitmask', E_ALL);
 ```
 
 NOTE: 此功能只对可被错误处理回调函数捕获的错误类型有效。

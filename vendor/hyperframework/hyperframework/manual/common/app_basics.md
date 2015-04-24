@@ -14,7 +14,7 @@ App 通过自身的 initializeErrorHandler 初始化错误处理器。
 
 可以通过配置修改错误处理器类：
 ```.php
-Config::set('hyperframework.error_handler.class', 'CustomErrorHandler');
+Hyperframework\Common\Config::set('hyperframework.error_handler.class', 'CustomErrorHandler');
 ```
 
 默认的错误处理器类是 Hyperframework\Common\ErrorHandler（App 的子类可以定制默认的错误处理器类，例如，Web 模块的 App 默认使用 Hyperframework\Web\ErrorHandler）。
