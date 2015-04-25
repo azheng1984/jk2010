@@ -18,11 +18,11 @@ class ManualController extends Controller {
             $tmp = explode('/', $name);
             if (count($tmp) > 1) {
                 switch ($tmp[0]) {
-                    case 'web': $nav = 'Web 应用开发框架'; break;
-                    case 'cli': $nav = '命令行应用开发框架'; break;
-                    case 'common': $nav = 'Common 模块'; break;
-                    case 'db': $nav = 'Db 模块'; break;
-                    case 'logging': $nav = 'Logging 模块'; break;
+                    case 'web': $nav = ['web', 'Web 应用开发框架']; break;
+                    case 'cli': $nav = ['cli', '命令行应用开发框架']; break;
+                    case 'common': $nav = ['common', 'Common 模块']; break;
+                    case 'db': $nav = ['db', 'Db 模块']; break;
+                    case 'logging': $nav = ['logging', 'Logging 模块']; break;
                 }
             }
         }

@@ -11,6 +11,9 @@ $this->setBlock('content', function() {
 ?>
 <h2><a href="/cn/manual">Hyperframework 手册</a></h2>
 <?php 
+        if ($this['nav'] !== 'index') {
+            echo '<div><a href="/cn/manual/', $this['nav'][0], '">', $this['nav'][1], '</a></div>';
+        }
     }
     echo $this['doc'];
 });?>

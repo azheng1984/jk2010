@@ -16,7 +16,6 @@
     <a href="/cn">首页</a>
     <a href="/cn/downloads">下载</a>
     <a href="/cn/docs">文档</a>
-    <a href="/cn/blog">日志</a>
 </div>
 <?php $this->renderBlock('content'); ?>
 <div><a href="https://github.com/" target="blank">Github</a> | Hyperframework 遵循 <a href="/cn/license">MIT 许可协议</a></div>
