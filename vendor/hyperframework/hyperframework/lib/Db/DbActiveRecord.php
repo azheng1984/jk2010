@@ -5,7 +5,7 @@ use InvalidArgumentException;
 
 abstract class DbActiveRecord {
     private static $tableNames = [];
-    private $row;
+    private $row = [];
 
     /**
      * @param array|string $where
@@ -29,7 +29,9 @@ abstract class DbActiveRecord {
         if ($row === false) {
             return;
         }
-        return new static($row);
+        $result = new static;
+        $result->setRow($row);
+        return $result;
     }
 
     /**
@@ -41,7 +43,9 @@ abstract class DbActiveRecord {
         if ($row === false) {
             return;
         }
-        return new static($row);
+        $result = new static;
+        $result->setRow($row);
+        return $result;
     }
 
     /**
@@ -54,7 +58,9 @@ abstract class DbActiveRecord {
         if ($row === false) {
             return;
         }
-        return new static($row);
+        $result = new static;
+        $result->setRow($row);
+        return $result;
     }
 
     /**
@@ -77,7 +83,9 @@ abstract class DbActiveRecord {
         }
         $result = [];
         foreach ($rows as $row) {
-            $result[] = new static($row);
+            $item = new static;
+            $item->setRow($row);
+            $result[] = $item;
         }
         return $result;
     }
@@ -91,7 +99,9 @@ abstract class DbActiveRecord {
         $rows = DbClient::findAll($sql, $params);
         $result = [];
         foreach ($rows as $row) {
-            $result[] = new static($row);
+            $item = new static;
+            $item->setRow($row);
+            $result[] = $item;
         }
         return $result;
     }

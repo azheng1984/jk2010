@@ -35,7 +35,7 @@ $article->setTitle('title');
 $article->setContent('content');
 $article->insert();
 ```
-如果插入成功，id 字段会被设置。
+如果插入成功，活动记录的 id 列会被赋值。
 
 ## 查询活动记录
 查询单个活动记录：
