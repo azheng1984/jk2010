@@ -29,9 +29,7 @@ abstract class DbActiveRecord {
         if ($row === false) {
             return;
         }
-        $result = new static;
-        $result->setRow($row);
-        return $result;
+        return static::load($row);
     }
 
     /**
@@ -43,9 +41,7 @@ abstract class DbActiveRecord {
         if ($row === false) {
             return;
         }
-        $result = new static;
-        $result->setRow($row);
-        return $result;
+        return static::load($row);
     }
 
     /**
@@ -58,9 +54,7 @@ abstract class DbActiveRecord {
         if ($row === false) {
             return;
         }
-        $result = new static;
-        $result->setRow($row);
-        return $result;
+        return static::load($row);
     }
 
     /**
@@ -83,9 +77,7 @@ abstract class DbActiveRecord {
         }
         $result = [];
         foreach ($rows as $row) {
-            $item = new static;
-            $item->setRow($row);
-            $result[] = $item;
+            $result[] = static::load($row);
         }
         return $result;
     }
@@ -99,9 +91,7 @@ abstract class DbActiveRecord {
         $rows = DbClient::findAll($sql, $params);
         $result = [];
         foreach ($rows as $row) {
-            $item = new static;
-            $item->setRow($row);
-            $result[] = $item;
+            $result[] = static::load($row);
         }
         return $result;
     }
@@ -286,6 +276,16 @@ abstract class DbActiveRecord {
      */
     protected function removeColumn($name) {
         unset($this->row[$name]);
+    }
+
+    /**
+     * @param array $row
+     * @return static
+     */
+    protected static function load(array $row) {
+        $result = new static;
+        $result->setRow($row);
+        return $result;
     }
 
     /**
