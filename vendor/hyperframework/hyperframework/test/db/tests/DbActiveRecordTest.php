@@ -90,14 +90,16 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testInsert() {
-        $doc = new Document(['name' => 'doc 1']);
+        $doc = new Document;
+        $doc->setName('doc 1');
         $doc->insert();
         $this->assertSame(3, DbClient::count('Document'));
         $this->assertNotSame(null, $doc->getId());
     }
 
     public function testUpdate() {
-        $doc = new Document(['name' => 'doc 1']);
+        $doc = new Document;
+        $doc->setName('doc 1');
         $doc->insert();
         $doc->setName('updated');
         $doc->update();
@@ -108,7 +110,8 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testDelete() {
-        $doc = new Document(['name' => 'doc 1']);
+        $doc = new Document;
+        $doc->setName('doc 1');
         $doc->insert();
         $doc->delete();
         $this->assertSame(2, DbClient::count('Document'));
@@ -118,7 +121,8 @@ class DbActiveRecordTest extends Base {
      * @expectedException Hyperframework\Db\DbActiveRecordException
      */
     public function testDeleteWithoutId() {
-        $doc = new Document(['name' => 'doc 1']);
+        $doc = new Document;
+        $doc->setName('doc 1');
         $doc->delete();
     }
 
@@ -126,15 +130,8 @@ class DbActiveRecordTest extends Base {
      * @expectedException Hyperframework\Db\DbActiveRecordException
      */
     public function testUpdateWithoutId() {
-        $doc = new Document(['name' => 'doc 1']);
-        $doc->update();
-    }
-
-    /**
-     * @expectedException Hyperframework\Db\DbActiveRecordException
-     */
-    public function testUpdateWhichOnlyHasIdColumn() {
-        $doc = new Document(['id' => 1]);
+        $doc = new Document;
+        $doc->setName('doc 1');
         $doc->update();
     }
 
@@ -172,9 +169,10 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testGetCloumn() {
-        $doc = new Document(['id' => 1]);
+        $doc = new Document;
+        $doc->setName('doc 1');
         $this->assertSame(
-            1, $this->callProtectedMethod($doc, 'getColumn', ['id'])
+            'doc 1', $this->callProtectedMethod($doc, 'getColumn', ['name'])
         );
         $this->assertNull(
             $this->callProtectedMethod($doc, 'getColumn', ['unknown'])
@@ -182,9 +180,10 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testHasCloumn() {
-        $doc = new Document(['id' => 1]);
+        $doc = new Document;
+        $doc->setName('doc 1');
         $this->assertTrue(
-            $this->callProtectedMethod($doc, 'hasColumn', ['id'])
+            $this->callProtectedMethod($doc, 'hasColumn', ['name'])
         );
         $this->assertFalse(
             $this->callProtectedMethod($doc, 'hasColumn', ['unknown'])
@@ -198,8 +197,9 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testRemoveColumn() {
-        $doc = new Document(['id' => 1]);
-        $this->callProtectedMethod($doc, 'removeColumn', ['id']);
+        $doc = new Document;
+        $doc->setName('doc 1');
+        $this->callProtectedMethod($doc, 'removeColumn', ['name']);
         $this->verifyRow($doc, []);
     }
 

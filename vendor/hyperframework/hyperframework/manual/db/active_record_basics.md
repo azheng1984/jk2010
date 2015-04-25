@@ -26,6 +26,7 @@ class Article extends ActiveRecord {
 }
 ```
 默认类名和表名一致，可以通过重写 getTableName 静态方法返回定制的表名。
+
 每个 active record 对应的表必须包含 id 列，并且必须是自增型。
 
 ## 插入活动记录
@@ -44,7 +45,7 @@ $where = 'title = ?';
 $params = ['title'];
 $article = Article::find($where, $params);
 ```
-$params 参数可以省略。
+$params 参数可以省略。如果活动记录不存在，则返回 null。
 
 根据 sql 查询单个活动记录：
 ```.php
@@ -52,12 +53,13 @@ $sql = 'SELECT * FROM Article WHERE title = ?';
 $params = ['title'];
 $article = Article::findBySql($sql, $params);
 ```
-$params 参数可以省略。
+$params 参数可以省略。如果活动记录不存在，则返回 null。
 
 根据 id 查询单个活动记录：
 ```.php
 $article = Article::findById(1);
 ```
+如果活动记录不存在，则返回 null。
 
 查询多个活动记录：
 ```.php
@@ -162,3 +164,8 @@ removeColumn 是 protected 方法。
 ```.php
 $table = Article::getTableName();
 ```
+## 加载活动记录
+```.php
+$record = static::load($row);
+```
+load 是 protected 静态方法。

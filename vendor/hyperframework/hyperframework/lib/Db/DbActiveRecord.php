@@ -185,11 +185,7 @@ abstract class DbActiveRecord {
         if (isset($row['id'])) {
             $id = $row['id'];
             if (count($row) === 1) {
-                throw new DbActiveRecordException(
-                    "Cannot update active record '"
-                        . get_called_class(). "' where id equals to $id, "
-                        . "because it only has an id column."
-                );
+                return;
             } else {
                 unset($row['id']);
                 return DbClient::updateById(static::getTableName(), $row, $id);
