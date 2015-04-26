@@ -6,7 +6,7 @@ $this['js'] = ['/highlight-8.4/highlight.pack.js'];
 $this['js_code'] = '<script>hljs.initHighlightingOnLoad();</script>';
 $this->setBlock('content', function() {
     if ($this['nav'] === null) {
-      echo '<h2>Hyperframework 手册</h2>';
+        echo '<h2>Hyperframework 手册</h2>';
     } else {
 ?>
 <h2><a href="/cn/manual">Hyperframework 手册</a></h2>
