@@ -1,5 +1,5 @@
 <?php
-/* @var $this Hyperframework\Web\ViewKernel */
+/* @var $this Hyperframework\Web\View */
 $this->setLayout('_layouts/main.html.php');
 $this->setBlock('content', function() {
     ?>
@@ -19,11 +19,13 @@ $this->setBlock('content', function() {
     	background: #fff;
     	border-radius: 10px;
     	width: 100%;
+    	box-shadow: 0 1px 1px rgba(100,100,100,.15);
     }
     h1 {
     	text-align: center;
-    	background: #ddd;
+    	background: #E0E8EF;
     	margin-top: 20px;
+    	  box-shadow: inset 0 1px 1px rgba(100,100,100,.1);
 }
     h1 span{
     	line-height: 50px;
@@ -74,7 +76,7 @@ $this->setBlock('content', function() {
 <div>支持 RESTful 的网站和 API 应用。</div>
 <h3>支持过滤器</h3>
 <div>控制器支持前置、后置和环绕过滤器。</div>
-<h3>优化的错误页面</h3>
+<h3>错误页面优化</h3>
 <div>通过内部和外部代码分离，错误信息和输出数据分离，辅助开发者更快定位错误。</div>
 <h3>支持视图模板</h3>
 <div>提供基于原生 PHP 的视图模板系统，并支持整合其他视图模板系统。</div>

@@ -1,3 +1,6 @@
+<?php 
+header('Content-Type:text/html; charset=UTF-8');
+?>
 <html>
 <head>
 <title><?= $this['title'] ?></title>
@@ -13,7 +16,7 @@ body {
   font:13px Arial,Helvetica,sans-serif;
   line-height:20px;
   margin:0;
-	background:#f1f1f1;
+	background:url(/assets/images/bg.png) #f1f1f1;
 }
 img {
   border:0;
@@ -25,6 +28,7 @@ a {
 a:hover,a:active {
   color:#007aff;
   border-color:#007aff;
+	text-decoration:underline;
 }
 a:active {
 /*
@@ -72,6 +76,9 @@ td {
 	font-size: 26px;
 	font-weight: bold;
 }
+#logo a:hover {
+	text-decoration:none;
+}
 #nav {
 	font-size: 16px;
 	margin: 20px;
@@ -86,6 +93,7 @@ td {
 #header-wrapper {
 	background-color: #5BB2EE;
 	width: 100%;
+	box-shadow: 0 0 4px rgba(0,0,0,.2);
 }
 #header {
   width:960px;
@@ -94,10 +102,15 @@ td {
 }
 #header a {
 	color: #fff;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.1);
 }
 #footer {
 	width: 100%;
-	margin: 10px 0;
+	margin: 20px 0;
+	color: #888;
+}
+#footer span {
+	color: #ccc;
 }
 </style>
 </head>
@@ -115,7 +128,7 @@ td {
 <div id="container">
 
 <?php $this->renderBlock('content'); ?>
-<div id="footer"><a href="https://github.com/" target="blank">Github</a> | Hyperframework 遵循 <a href="/cn/license">MIT 许可协议</a></div>
+<div id="footer"><a href="https://github.com/" target="blank">Github</a> <span>|</span> Hyperframework 遵循 <a href="/cn/license">MIT 许可协议</a></div>
 </div>
 <?php if (isset($this['js'])) {
     foreach ($this['js'] as $href) {?>
