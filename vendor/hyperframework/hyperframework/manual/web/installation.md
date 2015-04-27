@@ -34,9 +34,8 @@ server {
 <VirtualHost localhost:80>
     ServerName   localhost
     DocumentRoot /website/public
- 
-    RewriteEngine off
- 
+    RewriteEngine Off
+
     <Location />
         RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} -s [OR]
