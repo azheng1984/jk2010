@@ -23,10 +23,8 @@ $this->setBlock('content', function() {?>
 	margin:10px 0;
 }
 h1, h2 {
-  padding-bottom: 0.3em;
-  font-size: 2.25em;
-  line-height: 1.2;
-  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
 	width: 920px;
 }
 h1 {

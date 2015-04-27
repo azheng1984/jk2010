@@ -3,46 +3,56 @@
 Cli 模块中的 App 类继承自 Common 模块的 App 类，并通过 run 静态方法定义了单命令行应用的主流程。入口文件（run）通过调用该类中的 run 静态方法来运行应用。
 
 ## 主流程
-### App 对象创建
+*1. App 对象创建*
+
 App 类通过调用自身的 createApp 静态方法创建 App 对象。对象创建过程中会执行父类的构造函数，同时解析命令行输入（选项，参数），如果包含 help 选项，则调用 renderHelp 方法输出帮助信息，然后调用 quit 方法退出，如果包含 version 选项，则调用 renderVersion 方法输出版本信息，然后调用 quit 方法退出。
 
-### 执行命令
+*2. 执行命令*
+
 根据命令类配置，创建 command 对象。然后，调用 command 对象的 execute 方法（输入参数等于传入 execute 方法参数）。
 
-### 结束运行
+*3. 结束运行*
+
 结束运行时，app 对象的 finalize 方法会被调用。
 
 ## 命令配置
-### 配置文件
+*配置文件*
+
 配置文件 config/command.php。
 
-### 名称
+*名称*
+
 ```.php
 return [
     'name' => 'my-command'
 ];
 ```
 必须设置命令名称。
-### 版本
+
+*版本*
+
 ```.php
 [
     'version' => '1.0.0'
 ];
 ```
-### 描述
+
+*描述*
 ```.php
 [
     'description' => 'content'
 ];
 ```
-### 类
+
+*类*
 ```.php
 [
     'class' => 'CustomCommand'
 ];
 ```
 默认值是应用根命名空间的 command 类。比如，当应用的根命名空间是 MyApp 时，默认的 command 类就是 MyApp\Command。
-### 参数
+
+*参数*
 ```.php
 [
     'arguments' => [
@@ -80,7 +90,8 @@ function execute($arg1, array $arg2 = null) {
 ];
 ```
 NOTE: repeatable 参数必须是最后一个，required 参数之后的参数必须都是 required 的。
-### 选项
+
+*选项*
 ```.php
 [
     'options' => [
@@ -101,7 +112,7 @@ requried 字段必须是一个 bool 值，默认值是 false。
 
 repeatable 字段必须是一个 bool 值，默认值是 false。
 
-### 互斥选项分组
+*互斥选项分组*
 ```.php
 [
     'mutually_exclusive_option_groups' => [
@@ -148,11 +159,17 @@ $value = $app->getOption($name);
 $hasOption = $app->hasOption($name);
 ```
 ## 魔术选项
-### --help
+*--help*
+
 当命令中包含 help 选项时，在应用的构造函数中会自动调用 renderHelp 方法渲染帮助信息，然后调用 quit 方法退出应用。 
-### --version
+
+*--version*
+
 当命令中包含 version 选项时，在应用的构造函数中会自动调用 renderVersion 方法版本信息，然后调用 quit 方法退出应用。 
-### --
+
+*--*
+
 用于分割选项和参数（如果参数需要以 - 开始）
+
 ## 其他
 由于 Cli 模块的 App 类继承自 Common 模块的 App 类，通过 Common 模块文档中的 [App 基础](/cn/manual/common/app_basics) 获取更多相关信息。

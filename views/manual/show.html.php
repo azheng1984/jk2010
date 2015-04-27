@@ -34,22 +34,21 @@ h1, h2, h3, h4 {
 	font-weight:normal;
 }
 h1, h2 {
-  padding-bottom: 0.3em;
-  font-size: 2.25em;
-  line-height: 1.2;
-  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  line-height: 30px;
+  border-bottom: 1px solid #ddd;
 }
 h2 {
-font-size: 1.75em;
-  line-height: 1.225;
+  font-size: 20px;
+  line-height: 30px;
 }
-h3 {
-  font-size: 1.5em;
-  line-height: 1.43;
-}
-h4 {
-  font-size: 1.25em;
-}
+/* h3 { */
+/*   font-size: 1.5em; */
+/*   line-height: 1.43; */
+/* } */
+/* h4 { */
+/*   font-size: 1.25em; */
+/* } */
 table {
 	margin-bottom: 16px;
 }
@@ -70,6 +69,10 @@ tr:nth-child(2n) {
 table td {
   padding: 6px 13px;
   border: 1px solid #ddd;
+}
+em {
+	font-weight:bold;
+	font-style: normal;
 }
 </style>
 <?php 

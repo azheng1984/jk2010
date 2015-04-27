@@ -10,8 +10,8 @@ $this->setBlock('content', function() {
     	border-top: 1px solid #f1f1f1;
     	padding: 10px 0;
     	margin-top: 10px;
-    	color: #8fb070;
-    	color: #072;
+/*     	color: #8fb070; */
+/*     	color: #072; */
     }
     #home div {
     	color: #666;
@@ -23,6 +23,7 @@ $this->setBlock('content', function() {
     	box-shadow: 0 1px 1px rgba(100,100,100,.15);
     }
     h1 {
+    	font-size:26px;
     	text-align: center;
     	background: #E0E8EF;
     	color: #666;
@@ -36,7 +37,11 @@ $this->setBlock('content', function() {
     #modules .content, #features .content {
     	padding: 10px;
     }
+    #modules h3 {
+    	font-size: 20px;
+    }
     h2 {
+    	font-size:22px;
     	color: #777;
     	padding: 20px 5px 10px 5px;
     }

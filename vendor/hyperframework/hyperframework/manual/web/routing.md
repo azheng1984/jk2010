@@ -24,7 +24,7 @@ return 'module_segment_1/module_segment_2/controller/action';
 execute 执行完成后，如果匹配状态等于 false，同时也没有返回表示匹配成功的值，将会抛出 NotFoundException。
 
 ## 规则匹配
-### 静态路径
+*静态路径*
 ```.php
 $this->match('segment');
 ```
@@ -35,7 +35,7 @@ $this->match('segment');
 $this->match('/');
 ```
 
-### 动态段
+*动态段*
 ```.php
 $this->match(':segment');
 ```
@@ -52,12 +52,12 @@ $this->getParam('segment');
 $this->match(':module/:controller/:action');
 ```
 
-### 可选段
+*可选段*
 ```.php
 $this->match('required(/optional)');
 ```
 
-### 通配符
+*通配符*
 ```.php
 $this->match('*wildcard');
 ```
@@ -66,23 +66,25 @@ $this->match('*wildcard');
 
 如果匹配成功，可以通过 Router 的 getParam 获取对应的值。
 
-### match 选项
-#### 限制 Http 请求方法
+*match 选项*
+
+限制 http 请求方法：
 ```.php
 $this->match('/', ['methods' => ['GET']]);
 ```
+
 等价与：
 
 ```.php
 $this->matchGet('/');
 ```
 
-限制多个 Http 请求方法：
+限制多个 http 请求方法：
 ```.php
 $this->match('/', ['methods' => ['GET', 'POST']]);
 ```
 
-#### 文件格式
+限制文件格式：
 ```.php
 $this->match('path', ['format' => 'html']);
 ```
@@ -108,13 +110,15 @@ $this->match('path', ['format' => true]);
 $this->match('path', ['format' => true, 'default_format' => 'html']);
 ```
 
-#### 限制动态段格式
+限制动态段格式：
+
 可以使用正则表达式限制动态段的格式，例如：
 ```.php
 $this->match(':segment', [':segment' => '[a-z]']);
 ```
 
-#### 附加规则
+附加规则：
+
 ```.php
 $this->match(':segment', ['extra' => function($matches) {
     if ($matches['segment'][0] === 'x') {
@@ -137,7 +141,7 @@ $this->matchResource('sitemap');
 
 会使用预定义 action 规则：
 
-| Http 方法 | 路径          | action |
+| http 方法 | 路径          | action |
 | --------- | --------------| ------ |
 | GET       | /sitemap      | show   |
 | GET       | /sitemap/new  | new    |
@@ -148,7 +152,7 @@ $this->matchResource('sitemap');
 
 controller 等于 sitemap。
 
-### 自定义 action
+*自定义 action*
 ```.php
 $actions = ['preview'];
 ```
@@ -157,7 +161,7 @@ $actions = ['preview'];
 $actions = ['preview' => [['GET'], 'preview']];
 ```
 
-第一个元素可以是字符串（定义单个 Http 请求方法限制）或数组（定义多个 Http 请求方法限制），默认值是 'GET'。
+第一个元素可以是字符串（定义单个 http 请求方法限制）或数组（定义多个 http 请求方法限制），默认值是 'GET'。
 
 第二个参数是 action 路径，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
 
@@ -166,7 +170,8 @@ action 规则支持 match 选项（methods 选项除外），例如：
 $actions = ['preview' => ['extra' => $callback]];
 ```
 
-### 使用预定义 action
+*使用预定义 action*
+
 例如：
 ```.php
 $actions = ['show'];
@@ -178,13 +183,13 @@ $actions = ['show'];
 $actions = ['show' => [['GET'], '/']];
 ```
 
-### 修改预定义 action 规则
+*修改预定义 action 规则*
 ```.php
 $actions = ['delete' => ['DELETE', 'remove']];
 ```
 
-### 资源匹配选项
-#### actions
+*资源匹配选项*
+
 设置 action，例如：
 ```.php
 $this->matchResource('sitemap', ['actions' => ['show']]);
@@ -192,7 +197,6 @@ $this->matchResource('sitemap', ['actions' => ['show']]);
 
 默认值：`['show', 'new', 'edit', 'create', 'update', 'delete']`
 
-#### 更多选项
 资源匹配选项支持 match 选项，例如：
 ```.php
 $this->matchResource('sitemap', ['extra' => $callback]);
@@ -205,7 +209,7 @@ $this->matchResources('documents');
 
 会使用预定义集合 action 规则：
 
-| Http 方法 | 路径                | action |
+| http 方法 | 路径                | action |
 | --------- | ------------------- | ------ |
 | GET       | /documents          | index  |
 | GET       | /documents/new      | new    |
@@ -213,7 +217,7 @@ $this->matchResources('documents');
 
 和预定义元素 action 规则：
 
-| Http 方法 | 路径                | action |
+| http 方法 | 路径                | action |
 | --------- | ------------------- | ------ |
 | GET       | /documents/:id      | show   |
 | GET       | /documents/:id/edit | edit   |
@@ -222,28 +226,32 @@ $this->matchResources('documents');
 
 controller 等于 documents。
 
-#### collection_actions
+*collection_actions*
+
 设置集合 action，例如：
 ```.php
 $this->matchResources('documents', ['collection_actions' => ['index']]);
 ```
 默认值：`['index', 'new', 'create']`
 
-#### element_actions
+*element_actions*
+
 设置元素 action，例如：
 ```.php
 $this->matchResource('sitemap', ['element_actions' => ['show']]);
 ```
 默认值：`['show', 'edit', 'update', 'delete']`
 
-#### id
+*id*
+
 通过正则表达式定义元素 id 匹配规则，例如：
 ```.php
 $this->matchResources('documents', ['id' => '[a-z]+']);
 ```
 默认值：\d+
 
-#### 更多选项
+*更多选项*
+
 资源集合匹配选项支持 match 选项（methods 选项除外），例如：
 ```.php
 $this->matchResources('documents', ['extra' => $callback]);
@@ -262,7 +270,7 @@ $this->matchScope('admin', function() {
 if ($this->match('admin/settings')) return;
 ```
 
-## 获取 App 对象
+## 获取 app 对象
 ```.php
 $app = $this->getApp();
 ```

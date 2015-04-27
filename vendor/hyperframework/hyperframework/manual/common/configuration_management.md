@@ -14,7 +14,7 @@ $value = Config::get($name, 'default');
 
 当 $name 不存在时，返回默认值。
 
-### 获取字符串配置项
+*获取字符串配置项*
 ```.php
 $value = Config::getString($name);
 ```
@@ -23,7 +23,7 @@ $value = Config::getString($name);
 $value = Config::getString($name, 'default');
 ```
 
-### 获取布尔型配置项
+*获取布尔型配置项*
 ```.php
 $value = Config::getBool($name);
 ```
@@ -31,7 +31,7 @@ $value = Config::getBool($name);
 ```.php
 $value = Config::getBool($name, true);
 ```
-### 获取整型配置项
+*获取整型配置项*
 ```.php
 $value = Config::getInt($name);
 ```
@@ -39,7 +39,7 @@ $value = Config::getInt($name);
 ```.php
 $value = Config::getInt($name, 1);
 ```
-### 获取浮点型配置项
+*获取浮点型配置项*
 ```.php
 $value = Config::getFloat($name);
 ```
@@ -48,27 +48,27 @@ $value = Config::getFloat($name);
 $value = Config::getFloat($name, 1.0);
 ```
 
-### 获取应用根路径
+*获取应用根路径*
 ```.php
 $value = Config::getAppRootPath();
 ```
 
-### 获取应用根命名空间
+*获取应用根命名空间*
 ```.php
 $value = Config::getAppRootNamespace();
 ```
 
-### 获取所有配置项
+*获取所有配置项*
 ```.php
 $configs = Config::getAll();
 ```
 
-### 设置单个配置项
+## 设置单个配置项
 ```.php
 Config::set($name, $value);
 ```
 
-### 导入配置数组
+## 导入配置数组
 ```.php
 Config::import($data);
 ```
@@ -88,7 +88,7 @@ $data = [
 ];
 ```
 
-### 导入配置文件
+## 导入配置文件
 ```.php
 Config::importFile($path);
 ```

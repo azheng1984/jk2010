@@ -18,11 +18,11 @@ $this->setBlock('content', function() {?>
 #page div {
    clear:both;
 	margin:10px 0;
-}h1, h2 {
-  padding-bottom: 0.3em;
-  font-size: 2.25em;
-  line-height: 1.2;
-  border-bottom: 1px solid #eee;
+}
+h1, h2 {
+  padding-bottom: 5px;
+  line-height: 30px;
+  border-bottom: 1px solid #ddd;
 	width: 920px;
 }
 </style>

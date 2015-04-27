@@ -109,8 +109,8 @@ td {
 #footer span {
 	color: #ccc;
 }
-h2, h3, h4 {
-	color: #072;
+h1 {
+	font-size: 26px;
 }
 </style>
 </head>

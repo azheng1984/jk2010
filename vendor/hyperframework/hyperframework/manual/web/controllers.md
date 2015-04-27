@@ -90,7 +90,8 @@ $this->redirect('/path', 301);
 重定向方法会调用控制器的 quit 方法退出控制器。
 
 ## 过滤器
-### 前置过滤器
+*前置过滤器*
+
 在 action 处理逻辑之前执行，例如：
 ```.php
 $this->addBeforeFilter(function() {
@@ -117,7 +118,8 @@ class MyFilter {
 
 如果过滤器返回 false，则 controller 的 quit 方法会被调用。
 
-### 后置过滤器
+*后置过滤器*
+
 在 action 处理逻辑之后（包括视图渲染），例如：
 ```.php
 $this->addAfterFilter(function() {
@@ -129,7 +131,8 @@ addAfterFilter 也接受字符串参数，规则和 addBeforeFilter 函数相同
 
 后置过滤器的执行顺序和添加顺序相反。
 
-### 环绕过滤器
+*环绕过滤器*
+
 在 action 处理逻辑之前和之后（包括视图渲染）执行的逻辑，例如：
 ```.php
 $this->addAroundFilter(function() {

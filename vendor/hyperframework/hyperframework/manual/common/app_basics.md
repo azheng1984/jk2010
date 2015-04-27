@@ -2,14 +2,16 @@
 ## App 构造函数
 在 App 构造函数中会初始化配置和错误处理器。
 
-### 初始化配置
+*初始化配置*
+
 App 通过自身的 initializeConfig 初始化配置。
 
 应用必须包含 config/init.php 初始化配置文件，它会在此时被导入。
 
 如果设置了 $_ENV['HYPERFRAMEWORK_ENV']，那么初始化配置时会检查对应的环境配置文件，如果存在就会导入。例如，当 $_ENV['HYPERFRAMEWORK_ENV'] 等于 dev，config/environments/dev.php 就会被导入。
 
-### 初始化错误处理器
+*初始化错误处理器*
+
 App 通过自身的 initializeErrorHandler 初始化错误处理器。
 
 可以通过配置修改错误处理器类：
