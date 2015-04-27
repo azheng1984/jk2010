@@ -152,6 +152,7 @@ $this->matchResource('sitemap');
 
 controller 等于 sitemap。
 
+## 资源匹配选项
 **自定义 action**
 ```.php
 $actions = ['preview'];
@@ -226,6 +227,7 @@ $this->matchResources('documents');
 
 controller 等于 documents。
 
+## 资源集合匹配选项
 **collection_actions**
 
 设置集合 action，例如：
@@ -238,7 +240,7 @@ $this->matchResources('documents', ['collection_actions' => ['index']]);
 
 设置元素 action，例如：
 ```.php
-$this->matchResource('sitemap', ['element_actions' => ['show']]);
+$this->matchResource('documents', ['element_actions' => ['show']]);
 ```
 默认值：`['show', 'edit', 'update', 'delete']`
 
