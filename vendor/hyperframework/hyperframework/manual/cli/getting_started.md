@@ -1,6 +1,6 @@
 # 入门
-## 通过 Composer 安装 Hyperframework Cli 模块
-参考 [安装](/cn/manual/cli/installation)。
+## 通过 Composer 安装 Hyperframework
+参考 [下载](/cn/downloads)。
 
 ## 配置类自动加载
 创建 lib 文件夹，同时修改 composer.json，加入 namespace 对应关系：
@@ -8,7 +8,7 @@
 ```.json
 {
    "require": {
-       "hyperframework/cli": "*"
+       "hyperframework/hyperframework": "*"
    },
    "autoload": {
         "psr-4": {

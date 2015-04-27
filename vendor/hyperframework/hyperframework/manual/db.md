@@ -1,5 +1,4 @@
 # Db 模块
-### [安装](/cn/manual/db/installation)
 ### [入门](/cn/manual/db/getting_started)
 ### [连接](/cn/manual/db/connections)
 ### [Active Record 基础](/cn/manual/db/active_record_basics)

@@ -25,9 +25,9 @@ Logger::debug(function() {
 ```
 
 ## 日志等级阀值
-日志等级阀值用于筛选需要被记录日志，小于阀值的等级都会被记录。
+日志等级阀值用于筛选需要被记录日志，超过阀值的等级的日志会被忽略。
 
-一共有 7 等级（从小到大）：OFF、FATAL、ERROR、WARNING、NOTICE、INFO、DEBUG。默认值是 INFO。
+一共有 7 等级（值从 0 到 6）：OFF、FATAL、ERROR、WARNING、NOTICE、INFO、DEBUG。默认值是 INFO。
 
 设置：
 ```.php

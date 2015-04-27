@@ -1,5 +1,4 @@
 # Common 模块
-### [安装](/cn/manual/common/installation)
 ### [App 基础](/cn/manual/common/app_basics)
 ### [配置管理](/cn/manual/common/configuration_management)
 ### [错误处理](/cn/manual/common/error_handling)
