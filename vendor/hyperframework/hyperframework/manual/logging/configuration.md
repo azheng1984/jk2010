@@ -1,30 +1,40 @@
 # 日志
-## 设置日志引擎类
-hyperframework.logging.logger_engine_class
+## 日志引擎类
+名称: hyperframework.logging.logger_engine_class
 
-Hyperframework\Logging\LoggerEngine
+类型: string
 
-## 设置日志等级
-hyperframework.logging.log_level
+默认值: Hyperframework\Logging\LoggerEngine
 
-INFO
+## 日志等级
+名称: hyperframework.logging.log_level
 
-## 设置日志处理器类
-hyperframework.logging.log_handler_class
+类型: string
 
-Hyperframework\Logging\LogHandler
+默认值: INFO
 
-## 设置日志 formatter 类
-hyperframework.logging.log_formatter_class
+## 日志处理器类
+名称: hyperframework.logging.log_handler_class
 
-Hyperframework\Logging\LogFormatter
+默认值: Hyperframework\Logging\LogHandler
 
-## 设置日志 writer 类
-hyperframework.logging.log_writer_class
+## 日志 formatter 类
+名称: hyperframework.logging.log_formatter_class
 
-Hyperframework\Logging\LogWriter
+类型: string
 
-## 设置日志文件路径
-hyperframework.logging.log_path
+默认值: Hyperframework\Logging\LogFormatter
 
-log/app.log
+## 日志 writer 类
+名称: hyperframework.logging.log_writer_class
+
+类型: string
+
+默认值: Hyperframework\Logging\LogWriter
+
+## 日志文件路径
+名称: hyperframework.logging.log_path
+
+类型: string
+
+默认值: log/app.log
