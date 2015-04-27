@@ -27,10 +27,11 @@ $this->setBlock('content', function() {?>
 	margin:10px 0 0 5px;
 	color: #aaa;
 }
-h1, h2, h3 {
+h1, h2, h3, h4 {
 	width: 920px;
 	clear:both;
 	margin: 10px 0;
+	font-weight:normal;
 }
 h1, h2 {
   padding-bottom: 0.3em;

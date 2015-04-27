@@ -11,6 +11,7 @@ $this->setBlock('content', function() {
     	padding: 10px 0;
     	margin-top: 10px;
     	color: #8fb070;
+    	color: #072;
     }
     #home div {
     	color: #666;
@@ -24,6 +25,7 @@ $this->setBlock('content', function() {
     h1 {
     	text-align: center;
     	background: #E0E8EF;
+    	color: #666;
     	margin-top: 20px;
     	  box-shadow: inset 0 1px 1px rgba(100,100,100,.1);
 }

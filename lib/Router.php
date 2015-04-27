@@ -6,7 +6,8 @@ use Hyperframework\Web\Router as Base;
 class Router extends Base {
     protected function execute() {
         if ($this->match('/')) {
-            $this->redirect('/cn');
+            header('Cache-Control: max-age=0, private, must-revalidate');
+            $this->redirect('/cn', 301);
         }
         if ($this->match('cn')) return;
         if ($this->match('cn/docs')) return 'docs/show';
