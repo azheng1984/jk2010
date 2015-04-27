@@ -9,7 +9,7 @@ Config::set('hyperframework.web.csrf_protection.enable', false);
 $isEnabled = Hyperframework\Web\CsrfProtection::isEnabled();
 ```
 
-*获取 token 名称*
+**获取 token 名称**
 
 ```.php
 $tokenName = Hyperframework\Web\CsrfProtection::getTokenName();
@@ -21,12 +21,12 @@ $tokenName = Hyperframework\Web\CsrfProtection::getTokenName();
 Config::set('hyperframework.web.csrf_protection.token_name', 'custom_token_name');
 ```
 
-*获取 token 值*
+**获取 token 值**
 ```.php
 $token = Hyperframework\Web\CsrfProtection::getToken();
 ```
 
-*修改 csrf 防御引擎*
+**修改 csrf 防御引擎**
 ```.php
 Config::set('hyperframework.web.csrf_protection.engine_class', 'CustomCsrfProtectionEngine');
 ```

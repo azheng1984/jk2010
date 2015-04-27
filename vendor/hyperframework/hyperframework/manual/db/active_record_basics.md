@@ -89,7 +89,7 @@ $article->delete();
 ```
 
 ## 统计查询
-*count*
+**count**
 ```.php
 $where = 'id < ?';
 $params = [100];
@@ -97,7 +97,7 @@ $count = Article::count($where, $params);
 ```
 参数 $where 和 $params 可选，返回计数值。
 
-*min*
+**min**
 ```.php
 $where = 'id < ?';
 $columnName = 'view_count';
@@ -106,7 +106,7 @@ $min = Article::min($columnName, $where, $params);
 ```
 参数 $where 和 $params 可选，返回最小值。
 
-*max*
+**max**
 ```.php
 $where = 'id < ?';
 $columnName = 'view_count';
@@ -115,7 +115,7 @@ $max = Article::max( $columnName, $where, $params);
 ```
 参数 $where 和 $params 可选，返回最大值。
 
-*sum*
+**sum**
 ```.php
 $where = 'id < ?';
 $columnName = 'view_count';
@@ -124,7 +124,7 @@ $sum = Article::sum($columnName, $where, $params);
 ```
 参数 $where 和 $params 可选，返回总和。
 
-*average*
+**average**
 ```.php
 $where = 'id < ?';
 $params = [100];

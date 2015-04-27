@@ -70,10 +70,6 @@ table td {
   padding: 6px 13px;
   border: 1px solid #ddd;
 }
-em {
-	font-weight:bold;
-	font-style: normal;
-}
 </style>
 <?php 
 if ($this['nav'] !== null) {

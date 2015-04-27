@@ -24,7 +24,7 @@ return 'module_segment_1/module_segment_2/controller/action';
 execute 执行完成后，如果匹配状态等于 false，同时也没有返回表示匹配成功的值，将会抛出 NotFoundException。
 
 ## 规则匹配
-*静态路径*
+**静态路径**
 ```.php
 $this->match('segment');
 ```
@@ -35,7 +35,7 @@ $this->match('segment');
 $this->match('/');
 ```
 
-*动态段*
+**动态段**
 ```.php
 $this->match(':segment');
 ```
@@ -52,12 +52,12 @@ $this->getParam('segment');
 $this->match(':module/:controller/:action');
 ```
 
-*可选段*
+**可选段**
 ```.php
 $this->match('required(/optional)');
 ```
 
-*通配符*
+**通配符**
 ```.php
 $this->match('*wildcard');
 ```
@@ -66,7 +66,7 @@ $this->match('*wildcard');
 
 如果匹配成功，可以通过 Router 的 getParam 获取对应的值。
 
-*match 选项*
+**match 选项**
 
 限制 http 请求方法：
 ```.php
@@ -152,7 +152,7 @@ $this->matchResource('sitemap');
 
 controller 等于 sitemap。
 
-*自定义 action*
+**自定义 action**
 ```.php
 $actions = ['preview'];
 ```
@@ -170,7 +170,7 @@ action 规则支持 match 选项（methods 选项除外），例如：
 $actions = ['preview' => ['extra' => $callback]];
 ```
 
-*使用预定义 action*
+**使用预定义 action**
 
 例如：
 ```.php
@@ -183,12 +183,12 @@ $actions = ['show'];
 $actions = ['show' => [['GET'], '/']];
 ```
 
-*修改预定义 action 规则*
+**修改预定义 action 规则**
 ```.php
 $actions = ['delete' => ['DELETE', 'remove']];
 ```
 
-*资源匹配选项*
+**资源匹配选项**
 
 设置 action，例如：
 ```.php
@@ -226,7 +226,7 @@ $this->matchResources('documents');
 
 controller 等于 documents。
 
-*collection_actions*
+**collection_actions**
 
 设置集合 action，例如：
 ```.php
@@ -234,7 +234,7 @@ $this->matchResources('documents', ['collection_actions' => ['index']]);
 ```
 默认值：`['index', 'new', 'create']`
 
-*element_actions*
+**element_actions**
 
 设置元素 action，例如：
 ```.php
@@ -242,7 +242,7 @@ $this->matchResource('sitemap', ['element_actions' => ['show']]);
 ```
 默认值：`['show', 'edit', 'update', 'delete']`
 
-*id*
+**id**
 
 通过正则表达式定义元素 id 匹配规则，例如：
 ```.php
@@ -250,7 +250,7 @@ $this->matchResources('documents', ['id' => '[a-z]+']);
 ```
 默认值：\d+
 
-*更多选项*
+**更多选项**
 
 资源集合匹配选项支持 match 选项（methods 选项除外），例如：
 ```.php
