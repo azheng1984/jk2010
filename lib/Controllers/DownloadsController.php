@@ -5,6 +5,6 @@ use Hyperframework\Web\Controller;
 
 class DownloadsController extends Controller {
     public function doShowAction() {
-        return ['title' => '下载 - Hyperframework'];
+        return ['title' => '下载 - Hyperframework', 'top_nav' => 'downloads'];
     }
 }

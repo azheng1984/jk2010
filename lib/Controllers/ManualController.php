@@ -37,6 +37,7 @@ class ManualController extends Controller {
         $result = ['title' => '文档 - hyperframework'];
         $result['doc'] = $html;
         $result['nav'] = $nav;
+        $result['top_nav'] = 'docs';
         return $result;
     }
 }

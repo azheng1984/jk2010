@@ -24,6 +24,7 @@ class DocsController extends Controller {
         if ($name !== null) {
             $result['doc'] = $html;
         }
+        $result['top_nav'] = 'docs';
         return $result;
     }
 }

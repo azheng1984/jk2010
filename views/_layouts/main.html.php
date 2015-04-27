@@ -78,11 +78,16 @@ td {
 }
 #nav {
 	font-size: 16px;
-	margin: 20px;
+	margin: 15px 20px;
 	border-radius: 5px;
 }
 #nav div {
-    padding: 0 15px;
+    padding: 5px 15px;
+}
+#nav .selected {
+	background: #2C87C7;
+	box-shadow: inset 0 1px 1px rgba(100,100,100,.1);
+	border-radius: 5px;
 }
 #nav div.first {
 	border-left: 0;
@@ -119,9 +124,15 @@ h1 {
 <div id="header">
 <div id="logo"><a href="/cn">Hyperframework</a></div>
 <div id="nav">
-    <div class="first"><a href="/cn">首页</a></div>
-    <div><a href="/cn/downloads">下载</a></div>
-    <div><a href="/cn/docs">文档</a></div>
+<?php 
+    $topNav = null;
+    if (isset($this['top_nav'])) {
+        $topNav = $this['top_nav'];
+    }
+?>
+    <div class="first<?php if ($topNav === 'home') {echo ' selected';}?>"><a href="/cn">首页</a></div>
+    <div<?php if ($topNav === 'downloads') {echo ' class="selected"';}?>><a href="/cn/downloads">下载</a></div>
+    <div<?php if ($topNav === 'docs') {echo ' class="selected"';}?>><a href="/cn/docs">文档</a></div>
 </div>
 </div>
 </div>

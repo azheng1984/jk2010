@@ -42,13 +42,10 @@ h2 {
   font-size: 20px;
   line-height: 30px;
 }
-/* h3 { */
-/*   font-size: 1.5em; */
-/*   line-height: 1.43; */
-/* } */
-/* h4 { */
-/*   font-size: 1.25em; */
-/* } */
+h3 {
+  font-size: 18px;
+  line-height: 30px;
+}
 table {
 	margin-bottom: 16px;
 }
