@@ -45,6 +45,7 @@ h2 {
 h3 {
   font-size: 18px;
   line-height: 30px;
+  margin: 5px 0;
 }
 table {
 	margin-bottom: 16px;

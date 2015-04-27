@@ -40,7 +40,8 @@ NOTE: init.php 必须返回一个数组。
 
 ```.php
 <?php
-require dirname(__DIR__) . 'vendor' . DIRECTORY_SEPERATOR . 'autoload.php';
+require dirname(__DIR__) . DIRECTORY_SEPARATOR
+    . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 Hyperframework\Web\App::run();
 ```
 
@@ -63,6 +64,8 @@ class Router extends Base {
 
 ```.php
 <?php
+namespace Controllers;
+
 use Hyperframework\Web\Controller;
 
 class IndexController extends Controller {
@@ -73,7 +76,7 @@ class IndexController extends Controller {
 ```
 
 ## 创建视图
-创建 views/index/show.php，添加视图代码：
+创建 views/index/show.html.php，添加视图代码：
 
 ```.php
 <?php

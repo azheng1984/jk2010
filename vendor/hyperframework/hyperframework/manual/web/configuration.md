@@ -69,6 +69,13 @@
 
 默认值: Hyperframework\Web\View
 
+## 开启/关闭错误视图
+名称: hyperframework.web.error_view.enable
+
+类型: bool
+
+默认值: true
+
 ## 错误视图根路径
 名称: hyperframework.web.error_view.root_path
 

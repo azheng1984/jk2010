@@ -1,7 +1,6 @@
 {
    "autoload": {
        "psr-4": {
-             "Hyperframework\\": "/home/az/quickquick/vendor/hyperframework/hyperframework/lib/",
         }
     },
     "require-dev": {

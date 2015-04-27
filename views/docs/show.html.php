@@ -33,7 +33,7 @@ h1 {
 h3 {
   font-size: 18px;
   line-height: 30px;
-		margin: 10px 0;
+	margin: 5px 0;
 }
 </style>
 

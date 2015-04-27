@@ -139,7 +139,7 @@ h1 {
 <div id="container">
 
 <?php $this->renderBlock('content'); ?>
-<div id="footer"><a href="https://github.com/" target="blank">Github</a> <span>|</span> Hyperframework 遵循 <a href="/cn/license">MIT 许可协议</a></div>
+<div id="footer"><a href="https://github.com/hyperframework/hyperframework" target="blank">Github</a> <span>|</span> Hyperframework 遵循 <a href="/cn/license">MIT 许可协议</a></div>
 </div>
 <?php if (isset($this['js'])) {
     foreach ($this['js'] as $href) {?>

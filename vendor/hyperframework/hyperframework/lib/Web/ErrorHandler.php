@@ -34,12 +34,14 @@ class ErrorHandler extends Base {
             $this->executeDebugger($outputBuffer);
             ini_set('display_errors', '0');
         } elseif (Response::headersSent() === false) {
-            $this->rewriteHttpHeaders();
-            $this->deleteOutputBuffer();
-            $this->renderErrorView();
+            if (Config::getBool('hyperframework.web.error_view.enable', true)) {
+                $this->rewriteHttpHeaders();
+                $this->deleteOutputBuffer();
+                $this->renderErrorView();
+            }
         }
     }
-
+ 
     /**
      * @return string
      */
