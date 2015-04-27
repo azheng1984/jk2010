@@ -42,7 +42,7 @@ h2 a:active {
   border-color:#DD4B39;
 */
 }
-div, form, ol, ul, li, h1, h2, h3, table {
+div, form, ol, ul, h1, h2, h3, table {
   float:left;
 }
 h1, h2, h3 {
@@ -51,9 +51,6 @@ h1, h2, h3 {
   width: 100%;
 }
 ol, ul {
-  list-style:none;
-  padding:0;
-  margin:0;
 }
 table {
   border-collapse:collapse;

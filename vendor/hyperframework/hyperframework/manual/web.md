@@ -1,18 +1,18 @@
 # Web 应用开发框架
-## [安装](/cn/manual/web/installation)
+### [安装](/cn/manual/web/installation)
 
-## [入门](/cn/manual/web/getting_started)
+### [入门](/cn/manual/web/getting_started)
 
-## [App 基础](/cn/manual/web/app_basics)
+### [App 基础](/cn/manual/web/app_basics)
 
-## [路由](/cn/manual/web/routing)
+### [路由](/cn/manual/web/routing)
 
-## [控制器](/cn/manual/web/controllers)
+### [控制器](/cn/manual/web/controllers)
 
-## [视图](/cn/manual/web/views)
+### [视图](/cn/manual/web/views)
 
-## [错误处理](/cn/manual/web/error_handling)
+### [错误处理](/cn/manual/web/error_handling)
 
-## [安全](/cn/manual/web/security)
+### [安全](/cn/manual/web/security)
 
-## [配置](/cn/manual/web/configuration)
+### [配置](/cn/manual/web/configuration)

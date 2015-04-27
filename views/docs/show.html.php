@@ -5,14 +5,50 @@ $this['css'] = ['/highlight-8.4/styles/github.css'];
 $this['js'] = ['/highlight-8.4/highlight.pack.js'];
 $this['js_code'] = '<script>hljs.initHighlightingOnLoad();</script>';
 $this->setBlock('content', function() {?>
+<style type="text/css">
+#page {
+    background: #fff;
+	border-radius: 10px;
+	width: 100%;
+	box-shadow: 0 1px 1px rgba(100,100,100,.15);
+	margin-top:10px;
+	line-height: 1.6;
+	font-size:16px;
+}
+#page .content {
+	padding: 10px 20px;
+}
+#page div {
+   clear:both;
+	margin:10px 0;
+}
+h1, h2 {
+  padding-bottom: 0.3em;
+  font-size: 2.25em;
+  line-height: 1.2;
+  border-bottom: 1px solid #eee;
+	width: 920px;
+}
+h1 {
+	margin-bottom: 10px;
+}
+h3 {
+  font-size: 1.5em;
+  line-height: 1.43;
+}
+</style>
+
 <?php
 if (isset($this['doc'])) {
     echo $this['doc'];
     return;
 }
 ?>
+<div id="page">
+<div class="content">
 <h1>文档</h1>
-<h2><a href="/cn/manual">Hyperframework 手册</a></h2>
-<h2><a href="/api/v1.0.0-alpha/index.html">API</a></h2>
+<h3><a href="/cn/manual">Hyperframework 手册</a></h3>
+<h3><a href="/api/v1.0.0-alpha/index.html">API</a></h3>
+</div></div>
 <?php });?>
-<div></div>
+

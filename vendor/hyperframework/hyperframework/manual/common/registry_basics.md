@@ -3,11 +3,11 @@
 ```.php
 Hyperframework\Common\Registry::set('key', $value);
 ```
-## 获取已经注册的值
+## 获取值
 ```.php
 $value = Hyperframework\Common\Registry::get('key');
 ```
-## 移除已经注册的值
+## 移除项
 ```.php
 Hyperframework\Common\Registry::remove('key');
 ```
