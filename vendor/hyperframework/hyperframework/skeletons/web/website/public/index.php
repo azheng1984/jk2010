@@ -1,3 +1,4 @@
 <?php
-
-echo 'hi website';
+require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor'
+    . DIRECTORY_SEPARATOR . 'autoload.php';
+Hyperframework\Web\App::run();

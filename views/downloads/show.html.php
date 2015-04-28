@@ -47,7 +47,7 @@ h2 {
 <h2>通过 Composer 下载</h2>
 <div><strong></strong></div>
 <div>1. 安装 Composer。安装方法参考 <a href="https://getcomposer.org/doc/">Composer 文档</a>。</div>
-<div>2. 在项目根目录中新建 composer.json 文件，添加依赖：</div>
+<div>2. 在项目根目录中新建 composer.json 文件，添加对 Hyperframework 的依赖：</div>
 <pre><code class="json hljs">{
     "require": {
         "hyperframework/hyperframework": "*"
