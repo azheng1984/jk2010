@@ -14,19 +14,26 @@ return [
 
 **执行**
 ```.php
+$sql = "DELETE FROM Document WHERE id = ?";
+$params = [1];
 $rowCount = Hyperframework\Db\DbClient::execute($sql, $params);
 ```
 返回受影响的行数。
 
 **插入记录**
 ```.php
+$table = 'Article';
+$row = ['title' => 'new title'];
 Hyperframework\Db\DbClient::insert($table, $row);
 ```
 $row 参数是键值对，键表示列名，值表示列的值。
 
 **修改记录**
 ```.php
-$table = '';
+$table = 'Article';
+$columns = ['title' => 'new title'];
+$where = "id = ?";
+$params = [1];
 $rowCount = Hyperframework\Db\DbClient::update($table, $columns, $where, $params);
 ```
 参数 $params 可选，返回受影响的行数。
@@ -34,7 +41,6 @@ $rowCount = Hyperframework\Db\DbClient::update($table, $columns, $where, $params
 **删除记录**
 ```.php
 $table = 'Article';
-$columns = ['title' => 'new title'];
 $where = "id = ?";
 $params = [1];
 $rowCount = Hyperframework\Db\DbClient::delete($table, $where, $params);
