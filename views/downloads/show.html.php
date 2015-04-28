@@ -56,8 +56,8 @@ h2 {
 </code></pre>
 NOTE: 由于目前 Hyperframework 还没有发布正式版，所以需要加入 minimum-stability 字段来获取非正式版本，例如：
 <pre><code class="json hljs">{
+    "minimum-stability": "alpha",
     "require": {
-        "minimum-stability": "alpha",
         "hyperframework/hyperframework": "*"
     }
 }

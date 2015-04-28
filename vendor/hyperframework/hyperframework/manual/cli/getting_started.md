@@ -35,30 +35,32 @@ return [];
 NOTE: init.php 必须返回一个数组。
 
 ## 创建应用启动文件
-创建 run.php，添加应用启动代码：
+创建 run，添加应用启动代码：
 
 ```.php
+#!/usr/bin/env php
 <?php
-require dirname(__DIR__) . 'vendor' . DIRECTORY_SEPERATOR . 'autoload.php';
+require __DIR__ . DIRECTORY_SEPARATOR
+    . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 Hyperframework\Cli\App::run(__DIR__);
 ```
 
-赋予 run.php 可执行权限：
+赋予 run 可执行权限：
 ```.bash
-chmod 755 run.php
+chmod 755 run
 ```
 
 ## 添加命令配置
+创建 config/command.php，添加命令配置代码：
 ```.php
 <?php
 return [
     'name' => 'demo',
     'version' => '1.0.0',
-    'arguments' => [
-        ['name' => 'arg']
-    ],
     'options' => [
-        ['name' => 'opt']
+        ['name' => 'opt'],
+        ['name' => 'help'],
+        ['name' => 'version']
     ]
 ];
 ```
@@ -82,14 +84,14 @@ class Command extends Base {
 ## 显示帮助
 在项目根目录，输入：
 ```.bash
- ./run --help
+./run --help
 ```
 默认帮助信息将会被输出。
 
 ## 执行命令
 在项目根目录，输入：
 ```.bash
- ./run --opt content
+./run --opt content
 ```
 输出：
 ```.nohighlight
