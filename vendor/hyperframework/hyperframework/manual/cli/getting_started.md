@@ -86,8 +86,10 @@ class Command extends Base {
 ```.bash
 ./run --help
 ```
-默认帮助信息将会被输出。
-
+默认帮助信息将会被输出：
+```.nohighlight
+Usage: demo [--opt] [--help] [--version] <arg>
+```
 ## 执行命令
 在项目根目录，输入：
 ```.bash

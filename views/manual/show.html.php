@@ -16,9 +16,13 @@ $this->setBlock('content', function() {?>
 	line-height: 1.6;
 	font-size:16px;
 }
-.hljs {
+.hljs, .nohighlight {
 	background:#f7f7f7;
 	font-size: 14px;
+}
+.nohighlight {
+	display: block;
+	padding: 0.5em;
 }
 #manual .content {
 	padding: 10px 20px;
