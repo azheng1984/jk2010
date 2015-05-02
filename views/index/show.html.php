@@ -75,7 +75,13 @@ $this->setBlock('content', function() {
 <div> &nbsp;</div>
 <div id="modules"><div class="content">
 <h3 class="first"><img alt="Web 应用开发框架" src="/assets/images/web.png"/>Web <span>Web 应用开发框架</span></h3>
-<ul><li>应用架构符合 MVC 模式。</li><li>支持 RESTful 的网站和 API 应用。</li><li>控制器支持前置、后置和环绕过滤器。</li><li>优化错误信息，更快定位错误。</li><li>提供基于原生 PHP 的视图模板系统，并支持整合其他视图模板系统。</li></ul>
+<ul>
+<li>应用架构符合 MVC 模式。</li>
+<li>支持 RESTful 的网站和 API 应用。</li>
+<li>控制器支持前置、后置和环绕过滤器。</li>
+<li>优化错误信息，更快定位错误。</li>
+<li>提供基于原生 PHP 的视图模板系统，并支持整合其他视图模板系统。</li>
+</ul>
 <h3><img alt="命令行应用开发框架" src="/assets/images/cli.png"/>Cli <span>命令行应用开发框架</span></h3>
 <ul>
 <li>规范化的命令行交互模式，符合 GNU 命令行规范。</li>
