@@ -9,7 +9,7 @@ Web 应用脚手架位于 Hyperframeowrk 项目的 skeletons/web 目录中。
 
 website 文件夹包含网站应用脚手架，api 文件夹包含 API 应用脚手架。
 
-## 配置 Web 服务器 Url 重写规则
+## 配置 Web 服务器 URL 重写规则
 **Nginx**
 ```.nginx
 server {
