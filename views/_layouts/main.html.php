@@ -106,6 +106,9 @@ td {
 	color: #fff;
 	text-shadow: 0 1px 0 rgba(0,0,0,0.1);
 }
+#header #logo a {
+	text-shadow: none;
+}
 #footer {
 	width: 100%;
 	margin: 20px 0;

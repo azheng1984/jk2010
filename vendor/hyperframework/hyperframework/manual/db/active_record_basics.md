@@ -65,7 +65,7 @@ $article = Article::findById(1);
 ```.php
 $where = 'id > ?';
 $params = [1];
-$articles = Article::find($where, $params);
+$articles = Article::findAll($where, $params);
 ```
 
 根据 sql 查询多个活动记录：
