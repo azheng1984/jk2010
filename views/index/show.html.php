@@ -58,6 +58,7 @@ $this->setBlock('content', function() {
         padding: 3px 6px;
     	margin-left: 5px;
         border-radius: 3px;
+    	box-shadow: inset 0 1px 1px rgba(100,100,100,.1);
     }
     #home h3 img {
     	vertical-align: middle;
