@@ -47,7 +47,7 @@ if (isset($this['doc'])) {
 <div class="content">
 <h1>文档</h1>
 <h3><a href="/cn/manual">Hyperframework 手册</a></h3>
-<h3><a href="/api/v1.0.0-alpha/index.html">API</a></h3>
+<h3><a href="/api/v1.0.0-alpha.1/index.html">API</a></h3>
 </div></div>
 <?php });?>
 

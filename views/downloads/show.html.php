@@ -66,6 +66,7 @@ NOTE: 由于目前 Hyperframework 还没有发布正式版，所以需要加入 
 <pre><code class="bash hljs">php composer.phar install</code></pre>
 <div>Hyperframework 会被自动安装到项目根目录的 vendor/hyperframework/hyperframework 文件夹中。 </div>
 <h2>通过 Github 下载</h2>
-<div>项目地址：<a href="https://github.com/hyperframework/hyperframework">https://github.com/hyperframework/hyperframework</a></div>
+<div>测试版下载： <a href="https://github.com/hyperframework/hyperframework/archive/1.0.0-alpha.1.zip">v1.0.0-alpha.1</a></div>
+<div>项目地址： <a href="https://github.com/hyperframework/hyperframework">https://github.com/hyperframework/hyperframework</a></div>
 </div></div>
 <?php });?>

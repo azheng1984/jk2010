@@ -13,7 +13,7 @@
 
 默认值: true
 
-## 开启/关闭 Csrf 防护
+## 开启/关闭 csrf 防护
 名称: hyperframework.web.csrf_protection.enable
 
 类型: bool
@@ -97,7 +97,7 @@
 
 默认值: false
 
-## 开启/关闭 Debugger
+## 开启/关闭 debugger
 名称: hyperframework.web.debugger.enable
 
 类型: bool
