@@ -34,7 +34,18 @@ class ManualController extends Controller {
         } else {
             throw new NotFoundException;
         }
-        $result = ['title' => '文档 - hyperframework'];
+        $start = strpos($html, '<h1>') + 4;
+        $end = strpos($html, '</h1>');
+        $x = substr($html, $start, $end - $start);
+        if ($nav !== null) {
+            if ($nav === 'index') {
+                $result = ['title' => $x . ' - Hyperframework 手册'];
+            } else {
+                $result = ['title' => $x . ' - ' .$nav[1] . ' - Hyperframework 手册'];
+            }
+        } else {
+            $result = ['title' => 'Hyperframework 手册'];
+        }
         $result['doc'] = $html;
         $result['nav'] = $nav;
         $result['top_nav'] = 'docs';

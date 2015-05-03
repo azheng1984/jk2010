@@ -9,7 +9,7 @@ use Hyperframework\Web\NotFoundException;
 class DocsController extends Controller {
     public function doShowAction() {
         $name = $this->getRouteParam('name');
-        //todo check name pattern
+        //todo check name pattern(security)
         if ($name !== null) {
             $path = FileFullPathBuilder::build(
                 "vendor/hyperframework/hyperframework/docs/$name.md"
@@ -20,7 +20,7 @@ class DocsController extends Controller {
                 throw new NotFoundException;
             }
         }
-        $result = ['title' => '文档 - hyperframework'];
+        $result = ['title' => '文档 - Hyperframework'];
         if ($name !== null) {
             $result['doc'] = $html;
         }

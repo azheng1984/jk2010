@@ -87,9 +87,6 @@ if ($this['nav'] !== null) {
 <div id="manual">
 <div class="content">
 <?php
-    if ($this['nav'] === null) {
-        echo '<h1>Hyperframework 手册</h1>';
-    }
     echo $this['doc'];
 ?>
  </div>
