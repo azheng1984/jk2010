@@ -5,7 +5,7 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     protected function execute() {
-        if ($_SERVER['HTTP_HOST'] !== 'hyperframework.com') {
+        if ($_SERVER['HTTP_HOST'] !== 'hyperframework.com' && $_SERVER['HTTP_HOST'] !== 'localhost') {
             header('Cache-Control: max-age=0, private, must-revalidate');
             $this->redirect('http://hyperframework.com' . $_SERVER['REQUEST_URI'], 301);
         }
