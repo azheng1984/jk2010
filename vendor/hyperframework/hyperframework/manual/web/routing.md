@@ -68,7 +68,7 @@ $this->match('*wildcard');
 
 **match 选项**
 
-限制 http 请求方法：
+限制 HTTP 请求方法：
 ```.php
 $this->match('/', ['methods' => ['GET']]);
 ```
@@ -79,7 +79,7 @@ $this->match('/', ['methods' => ['GET']]);
 $this->matchGet('/');
 ```
 
-限制多个 http 请求方法：
+限制多个 HTTP 请求方法：
 ```.php
 $this->match('/', ['methods' => ['GET', 'POST']]);
 ```
@@ -141,7 +141,7 @@ $this->matchResource('sitemap');
 
 会使用预定义 action 规则：
 
-| http 方法 | 路径          | action |
+| HTTP 方法 | 路径          | action |
 | --------- | --------------| ------ |
 | GET       | /sitemap      | show   |
 | GET       | /sitemap/new  | new    |
@@ -162,7 +162,7 @@ $actions = ['preview'];
 $actions = ['preview' => [['GET'], 'preview']];
 ```
 
-第一个元素可以是字符串（定义单个 http 请求方法限制）或数组（定义多个 http 请求方法限制），默认值是 'GET'。
+第一个元素可以是字符串（定义单个 HTTP 请求方法限制）或数组（定义多个 HTTP 请求方法限制），默认值是 'GET'。
 
 第二个参数是 action 路径，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
 
@@ -210,7 +210,7 @@ $this->matchResources('documents');
 
 会使用预定义集合 action 规则：
 
-| http 方法 | 路径                | action |
+| HTTP 方法 | 路径                | action |
 | --------- | ------------------- | ------ |
 | GET       | /documents          | index  |
 | GET       | /documents/new      | new    |
@@ -218,7 +218,7 @@ $this->matchResources('documents');
 
 和预定义元素 action 规则：
 
-| http 方法 | 路径                | action |
+| HTTP 方法 | 路径                | action |
 | --------- | ------------------- | ------ |
 | GET       | /documents/:id      | show   |
 | GET       | /documents/:id/edit | edit   |

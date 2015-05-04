@@ -68,7 +68,7 @@ echo $this->setLayout('main');
 ```
 
 ## 视图对象成员智能提示
-可以通过 phpdoc 标注视图中 $this 的类型，例如：
+可以通过 PHPDoc 标注视图中 $this 的类型，例如：
 ```php
 /* @var $this Hyperframework\Web\View */
 ```

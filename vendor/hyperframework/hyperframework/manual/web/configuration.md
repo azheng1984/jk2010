@@ -6,28 +6,28 @@
 
 默认值: Hyperframework\Web\Router
 
-## 开启/关闭 http 请求方法重写
+## 开启/关闭 HTTP 请求方法重写
 名称: hyperframework.web.rewrite_request_method
 
 类型: bool
 
 默认值: true
 
-## 开启/关闭 csrf 防护
+## 开启/关闭 CSRF 防护
 名称: hyperframework.web.csrf_protection.enable
 
 类型: bool
 
 默认值: true
 
-## Csrf 防护引擎类
+## CSRF 防护引擎类
 名称: hyperframework.web.csrf_protection.engine_class
 
 类型: string
 
 默认值: Hyperframework\Web\CsrfProtectionEngine
 
-## Csrf 防护 token 名称
+## CSRF 防护 token 名称
 名称: hyperframework.web.csrf_protection.token_name
 
 类型: string
@@ -90,7 +90,7 @@
 
 默认值: Hyperframework\Web\ErrorView
 
-## 记录 http 异常日志
+## 记录 HTTP 异常日志
 名称: hyperframework.web.log_http_exception
 
 类型: bool

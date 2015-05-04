@@ -6,7 +6,7 @@ Web 模块中的 App 类继承自 Common 模块的 App 类，并通过 run 静�
 ## Web 应用的主流程
 **1. 创建 App 对象**
 
-App 类通过调用自身的 createApp 静态方法创建 App 对象。对象创建过程中会执行父类的构造函数，同时重写 http 请求方法（可配置），执行 Csrf 检查（可配置）。
+App 类通过调用自身的 createApp 静态方法创建 App 对象。对象创建过程中会执行父类的构造函数，同时重写 HTTP 请求方法（可配置），执行 CSRF 检查（可配置）。
 
 **2. 创建 Controller 对象**
 
@@ -28,18 +28,18 @@ App 类通过调用自身的 createApp 静态方法创建 App 对象。对象创
 Config::set('hyperframework.web.router_class', 'CustomRouter');
 ```
 
-## 重写 http 请求方法
-App 通过自身的 rewriteRequestMethod 方法来重写 http 请求方法。 该方法使用 $_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 或 $_POST\['_method'] 来重写 $_SERVER\['REQUEST_METHOD']，$_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 优先级高于 $_POST\['_method']。如果重写成功，$_SERVER\['REQUEST_METHOD'] 的原始值将会保存在 $_SERVER\['ORIGINAL_REQUEST_METHOD'] 中。
+## 重写 HTTP 请求方法
+App 通过自身的 rewriteRequestMethod 方法来重写 HTTP 请求方法。 该方法使用 $_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 或 $_POST\['_method'] 来重写 $_SERVER\['REQUEST_METHOD']，$_SERVER\['HTTP_X_HTTP_METHOD_OVERRIDE'] 优先级高于 $_POST\['_method']。如果重写成功，$_SERVER\['REQUEST_METHOD'] 的原始值将会保存在 $_SERVER\['ORIGINAL_REQUEST_METHOD'] 中。
 
-可以通过配置关闭 http 请求方法重写：
+可以通过配置关闭 HTTP 请求方法重写：
 ```.php
 Config::set('hyperframework.web.rewrite_request_method', false);
 ```
 
-## 执行 Csrf 检查
-App 通过自身的 checkCsrf 方法来执行 Csrf 检查。
+## 执行 CSRF 检查
+App 通过自身的 checkCsrf 方法来执行 CSRF 检查。
 
-关于 Csrf 检查的详细信息，参考 [安全](/cn/manual/web/security)。
+关于 CSRF 检查的详细信息，参考 [安全](/cn/manual/web/security)。
 
 ## 默认的错误处理器
 Web 模块的 App 使用 Hyperframework\Web\ErrorHandler 作为默认错误处理器。
