@@ -153,5 +153,14 @@ h1 {
         echo $this['js_code'];
     }
 ?>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?67f46c3522cf55a1128e927dee1cb175";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </body>
 </html>
