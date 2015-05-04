@@ -9,6 +9,10 @@ class Router extends Base {
             header('Cache-Control: max-age=0, private, must-revalidate');
             $this->redirect('/cn', 301);
         }
+        if ($_SERVER['HTTP_HOST'] !== 'hyperframework.com') {
+            header('Cache-Control: max-age=0, private, must-revalidate');
+            $this->redirect('http://hyperframework.com/' . $_SERVER['REQUEST_URI'], 301);
+        }
         if ($this->match('cn')) return;
         if ($this->match('cn/docs')) return 'docs/show';
         if ($this->match('cn/license')) return 'license/show';
