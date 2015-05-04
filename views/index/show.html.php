@@ -93,6 +93,7 @@ $this->setBlock('content', function() {
 <li>支持 Active Record 模式，用于构建领域模型。</li>
 <li>支持数据库操作剖析，用于排错和性能调优。</li>
 <li>支持事务的自动提交和回滚。</li>
+<li>支持连接池。</li>
 </ul>
 <h3><img alt="日志模块" src="/assets/images/logging.png"/>Logging <span>日志模块</span></h3>
 <ul>
