@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Blog;
-ini_set('display_errors', true);
-ini_set('html_errors', true);
+//ini_set('display_errors', true);
+//ini_set('html_errors', true);
 
 return array(
     '[hyperframework]',

@@ -1,4 +1,5 @@
-<?php 
+<?php
+header('Cache-Control: max-age=0, private, must-revalidate');
 header('Content-Type:text/html; charset=UTF-8');
 ?>
 <html>
