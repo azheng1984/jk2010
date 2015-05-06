@@ -22,4 +22,4 @@ Hyperframework\Common\Config::set('hyperframework.error_handler.class', 'CustomE
 默认的错误处理器类是 Hyperframework\Common\ErrorHandler（App 的子类可以定制默认的错误处理器类，例如，Web 模块的 App 默认使用 Hyperframework\Web\ErrorHandler）。
 
 ## 退出应用
-可以通过调用 App 对象的 quit 方法退出应用。Quit 方法会调用 App 对象的 finalize 方法结束应用逻辑，然后通过 ExitHelper 类的 exitScript 静态方法推出程序。 
+可以通过调用 App 对象的 quit 方法退出应用。`quit` 方法会调用 App 对象的 finalize 方法结束应用逻辑，然后通过 ExitHelper 类的 exitScript 静态方法推出程序。 

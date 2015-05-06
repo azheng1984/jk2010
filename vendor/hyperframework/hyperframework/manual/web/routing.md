@@ -153,45 +153,9 @@ $this->matchResource('sitemap');
 controller 等于 sitemap。
 
 ## 资源匹配选项
-**自定义 action**
-```.php
-$actions = ['preview'];
-```
-等价与：
-```.php
-$actions = ['preview' => [['GET'], 'preview']];
-```
-
-第一个元素可以是字符串（定义单个 HTTP 请求方法限制）或数组（定义多个 HTTP 请求方法限制），默认值是 'GET'。
-
-第二个参数是 action 路径，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
-
-action 规则支持 match 选项（methods 选项除外），例如：
-```.php
-$actions = ['preview' => ['extra' => $callback]];
-```
-
-**使用预定义 action**
+**设置 action**
 
 例如：
-```.php
-$actions = ['show'];
-```
-
-等价与：
-
-```.php
-$actions = ['show' => [['GET'], '/']];
-```
-
-**修改预定义 action 规则**
-```.php
-$actions = ['delete' => ['DELETE', 'remove']];
-```
-
-**资源匹配选项**
-
-设置 action，例如：
 ```.php
 $this->matchResource('sitemap', ['actions' => ['show']]);
 ```
@@ -201,6 +165,44 @@ $this->matchResource('sitemap', ['actions' => ['show']]);
 资源匹配选项支持 match 选项，例如：
 ```.php
 $this->matchResource('sitemap', ['extra' => $callback]);
+```
+
+**自定义 action**
+```.php
+$this->matchResource('sitemap', ['actions' => ['preview']]);
+```
+
+等价与：
+
+```.php
+$this->matchResource('sitemap', ['actions' => ['preview' => [['GET'], 'preview']]]);
+```
+
+第一个元素可以是字符串（定义单个 HTTP 请求方法限制）或数组（定义多个 HTTP 请求方法限制），默认值是 'GET'。
+
+第二个参数是 action 路径，默认和 action 名称相同。action 路径基于资源路径，例如，当资源路径等于 sitemap，action 路径等于 preview，那么请求路径是 sitemap/preview。
+
+action 规则支持 match 选项（methods 选项除外），例如：
+```.php
+$this->matchResource('sitemap', ['actions' => ['preview' => [['GET'], 'preview']]]);
+```
+
+**使用预定义 action**
+
+例如：
+```.php
+$this->matchResource('sitemap', ['actions' => ['show']]);
+```
+
+等价与：
+
+```.php
+$this->matchResource('sitemap', ['actions' => ['show' => [['GET'], '/']]]);
+```
+
+**修改预定义 action 规则**
+```.php
+$this->matchResource('sitemap', ['actions' => ['delete' => ['DELETE', 'remove']]]);
 ```
 
 ## 资源集合匹配
