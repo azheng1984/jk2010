@@ -24,8 +24,8 @@ img {
 }
 #footer img {
 	vertical-align:middle;
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
 	margin-right: 5px;
 }
 a {
