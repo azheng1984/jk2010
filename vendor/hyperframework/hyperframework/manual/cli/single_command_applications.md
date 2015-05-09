@@ -66,13 +66,15 @@ return [
 ```
 单个 argument 配置必须有 name 字段，字段值的类型必须是字符串，字段值必须值包含一个以上的字母，数字或中划线，并且不能以中划线开始。
 
-requried 字段必须是一个 bool 值，默认值是 true。
+requried 字段：配置参数是否是必选的，必须是一个 bool 值，默认值是 true。
 
-repeatable 字段必须是一个 bool 值，默认值是 false。
+repeatable 字段：配置参数是否是可重复的，必须是一个 bool 值，默认值是 false。
 
 如果参数配置不存在，那么，将通过使用 command 对象的 execute 方法的参数列表信息作为默认配置，比如：
 ```.php
-function execute($arg1, array $arg2 = null) {
+class Command {
+    public function execute($arg1, array $arg2 = null) {
+    }
 }
 ```
 等价与：
@@ -89,7 +91,7 @@ function execute($arg1, array $arg2 = null) {
     ]
 ];
 ```
-NOTE: repeatable 参数必须是最后一个，required 参数之后的参数必须都是 required 的。
+NOTE: 可重复参数必须是最后一个，必选参数之后的参数必须都是必选的。
 
 **选项**
 ```.php
