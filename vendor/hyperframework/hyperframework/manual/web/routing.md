@@ -204,7 +204,7 @@ $this->matchResource('sitemap', [
 ```.php
 $this->matchResource('sitemap', [
     'actions' => [
-        'preview' => [['GET'], 'preview']
+        'preview' => ['GET', 'preview']
     ]
 ]);
 ```
@@ -217,7 +217,7 @@ action 规则支持 match 选项（methods 选项除外），例如：
 ```.php
 $this->matchResource('sitemap', [
     'actions' => [
-        'preview' => [['GET'], 'preview']
+        'preview' => ['GET', 'preview', 'extra' => $callback]
     ]
 ]);
 ```
