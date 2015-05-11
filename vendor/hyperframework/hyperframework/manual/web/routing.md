@@ -21,9 +21,9 @@ return 'module/controller/action';
 return 'module_segment_1/module_segment_2/controller/action';
 ```
 
-如果 match、matchGet、matchPut、matchPost、matchPatch、matchDelete、matchResource、matchResources 匹配成功，匹配状态会被设置成 true。
+如果 match、matchGet、matchPut、matchPost、matchPatch、matchDelete、matchResource、matchResources 匹配成功，匹配状态会被设置成 true。如果执行匹配操作时，匹配状态已经是 true，此时将会抛出 Hyperframework\Web\RoutingException。
 
-execute 执行完成后，如果匹配状态等于 false，同时也没有返回表示匹配成功的值，将会抛出 NotFoundException。
+execute 执行完成后，如果匹配状态等于 false，同时也没有返回表示匹配成功的值，将会抛出 Hyperframework\Web\NotFoundException。
 
 ## 规则匹配
 **静态路径**
