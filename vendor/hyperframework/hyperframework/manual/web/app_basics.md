@@ -5,15 +5,19 @@ Web 模块中的 App 类继承自 Common 模块的 App 类，并通过 run 静�
 
 ## Web 应用的主流程
 **1. 创建 App 对象**
+
 App 类通过调用自身的 createApp 静态方法创建 App 对象。对象创建过程中会执行父类的构造函数，同时重写 HTTP 请求方法（可配置），执行 CSRF 检查（可配置）。
 
 **2. 创建 Controller 对象**
+
 通过 Router 获取 Controller 类，并创建 Controller 对象。
 
 **3. 运行 Controller**
+
 通过调用 Controller 对象的 run 方法来运行 Controller。
 
 **4. 结束运行**
+
 结束运行时，App 对象的 finalize 方法会被调用。
 
 ## 获取路由器对象

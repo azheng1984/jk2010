@@ -16,6 +16,7 @@
 控制器通过路由器的 getActionMethod 方法获取 action 方法名称。当 action 等于 show 时，action 方法默认是 doShowAction。
 
 Action 方法返回值默认会作为视图模型，所以必须返回数组或 null。
+
 ## 设置视图
 控制器的 setView 函数接受一个视图对象或者字符串为参数，字符串表示视图名，例如：
 ```.php
@@ -33,6 +34,7 @@ class CustomView {
     }
 }
 ```
+
 ## 获取视图
 ```.php
 $view = $this->getView();
@@ -62,6 +64,7 @@ $this->renderView();
 $format = $this->getOutputFormat();
 ```
 默认返回 format 路由参数。
+
 ## 路由参数
 获取单个路由参数：
 ```.php
@@ -75,10 +78,12 @@ $params = $this->getRouteParams();
 ```.php
 $hasQuery = $this->hasRouteParam('query');
 ```
+
 ## 获取 App 对象
 ```.php
 $app = $this->getApp();
 ```
+
 ## 重定向
 ```.php
 $this->redirect('/path');
@@ -91,7 +96,6 @@ $this->redirect('/path', 301);
 
 ## 过滤器
 **前置过滤器**
-
 在 action 处理逻辑之前执行，例如：
 ```.php
 $this->addBeforeFilter(function() {
@@ -119,7 +123,6 @@ class MyFilter {
 如果过滤器返回 false，则 controller 的 quit 方法会被调用。
 
 **后置过滤器**
-
 在 action 处理逻辑之后（包括视图渲染），例如：
 ```.php
 $this->addAfterFilter(function() {
@@ -132,7 +135,6 @@ addAfterFilter 也接受字符串参数，规则和 addBeforeFilter 函数相同
 后置过滤器的执行顺序和添加顺序相反。
 
 **环绕过滤器**
-
 在 action 处理逻辑之前和之后（包括视图渲染）执行的逻辑，例如：
 ```.php
 $this->addAroundFilter(function() {
@@ -159,6 +161,7 @@ $this->addAroundFilter(function() {
 addAroundFilter 也接受字符串参数，规则和 addBeforeFilter 函数相同。
 
 NOTE: 环绕过滤器需要 PHP 版本大于等于 5.5
+
 ## 退出控制器
 ```.php
 $this->quit();
