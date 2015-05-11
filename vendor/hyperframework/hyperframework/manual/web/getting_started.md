@@ -35,7 +35,7 @@ return [];
 
 NOTE: init.php 必须返回一个数组。
 
-## 创建应用启动文件
+## 创建应用入口文件
 创建 public/index.php，添加应用启动代码：
 
 ```.php
