@@ -83,12 +83,16 @@ $this->matchGet('/');
 
 限制多个 HTTP 请求方法：
 ```.php
-$this->match('/', ['methods' => ['GET', 'POST']]);
+$this->match('/', [
+    'methods' => ['GET', 'POST']
+]);
 ```
 
 限制文件格式：
 ```.php
-$this->match('path', ['format' => 'html']);
+$this->match('path', [
+    'format' => 'html'
+]);
 ```
 
 等价与：
@@ -99,41 +103,54 @@ $this->match('path.html');
 
 匹配多个格式：
 ```.php
-$this->match('path', ['format' => 'html|json']);
+$this->match('path', [
+    'format' => 'html|json'
+]);
 ```
 
 匹配任意格式：
 ```.php
-$this->match('path', ['format' => true]);
+$this->match('path', [
+    'format' => true
+]);
 ```
 
 设置默认格式：
 ```.php
-$this->match('path', ['format' => true, 'default_format' => 'html']);
+$this->match('path', [
+    'format' => true,
+    'default_format' => 'html'
+]);
 ```
 
 限制动态段格式：
 
 可以使用正则表达式限制动态段的格式，例如：
 ```.php
-$this->match(':segment', [':segment' => '[a-z]']);
+$this->match(':segment', [
+    ':segment' => '[a-z]'
+]);
 ```
 
 附加规则：
 
 ```.php
-$this->match(':segment', ['extra' => function($matches) {
-    if ($matches['segment'][0] === 'x') {
-        return true;
+$this->match(':segment', [
+    'extra' => function($matches) {
+        if ($matches['segment'][0] === 'x') {
+            return true;
+        }
     }
-}]);
+]);
 ```
 
 附加规则返回 bool 值，true 表示通过匹配。
 
 设置多个附加规则：
 ```.php
-$this->match(':segment', ['extra' => [$callback1, $callback2]]);
+$this->match(':segment', [
+    'extra' => [$callback1, $callback2]
+]);
 ```
 
 ## 资源匹配
@@ -159,25 +176,35 @@ controller 等于 sitemap。
 
 例如：
 ```.php
-$this->matchResource('sitemap', ['actions' => ['show']]);
+$this->matchResource('sitemap', [
+    'actions' => ['show']
+]);
 ```
 
 默认值：`['show', 'new', 'edit', 'create', 'update', 'delete']`
 
 资源匹配选项支持 match 选项，例如：
 ```.php
-$this->matchResource('sitemap', ['extra' => $callback]);
+$this->matchResource('sitemap', [
+    'extra' => $callback
+]);
 ```
 
 **自定义 action**
 ```.php
-$this->matchResource('sitemap', ['actions' => ['preview']]);
+$this->matchResource('sitemap', [
+    'actions' => ['preview']
+]);
 ```
 
 等价与：
 
 ```.php
-$this->matchResource('sitemap', ['actions' => ['preview' => [['GET'], 'preview']]]);
+$this->matchResource('sitemap', [
+    'actions' => [
+        'preview' => [['GET'], 'preview']
+    ]
+]);
 ```
 
 第一个元素可以是字符串（定义单个 HTTP 请求方法限制）或数组（定义多个 HTTP 请求方法限制），默认值是 'GET'。
@@ -186,25 +213,39 @@ $this->matchResource('sitemap', ['actions' => ['preview' => [['GET'], 'preview']
 
 action 规则支持 match 选项（methods 选项除外），例如：
 ```.php
-$this->matchResource('sitemap', ['actions' => ['preview' => [['GET'], 'preview']]]);
+$this->matchResource('sitemap', [
+    'actions' => [
+        'preview' => [['GET'], 'preview']
+    ]
+]);
 ```
 
 **使用预定义 action**
 
 例如：
 ```.php
-$this->matchResource('sitemap', ['actions' => ['show']]);
+$this->matchResource('sitemap', [
+    'actions' => ['show']
+]);
 ```
 
 等价与：
 
 ```.php
-$this->matchResource('sitemap', ['actions' => ['show' => [['GET'], '/']]]);
+$this->matchResource('sitemap', [
+    'actions' => [
+         'show' => [['GET'], '/']
+    ]
+]);
 ```
 
 **修改预定义 action 规则**
 ```.php
-$this->matchResource('sitemap', ['actions' => ['delete' => ['DELETE', 'remove']]]);
+$this->matchResource('sitemap', [
+    'actions' => [
+        'delete' => ['DELETE', 'remove']
+    ]
+]);
 ```
 
 ## 资源集合匹配
@@ -236,7 +277,9 @@ controller 等于 documents。
 
 设置集合 action，例如：
 ```.php
-$this->matchResources('documents', ['collection_actions' => ['index']]);
+$this->matchResources('documents', [
+    'collection_actions' => ['index']
+]);
 ```
 默认值：`['index', 'new', 'create']`
 
@@ -244,7 +287,9 @@ $this->matchResources('documents', ['collection_actions' => ['index']]);
 
 设置元素 action，例如：
 ```.php
-$this->matchResource('documents', ['element_actions' => ['show']]);
+$this->matchResource('documents', [
+    'element_actions' => ['show']
+]);
 ```
 默认值：`['show', 'edit', 'update', 'delete']`
 
@@ -252,7 +297,9 @@ $this->matchResource('documents', ['element_actions' => ['show']]);
 
 通过正则表达式定义元素 id 匹配规则，例如：
 ```.php
-$this->matchResources('documents', ['id' => '[a-z]+']);
+$this->matchResources('documents', [
+    'id' => '[a-z]+'
+]);
 ```
 默认值：\d+
 
@@ -260,7 +307,9 @@ $this->matchResources('documents', ['id' => '[a-z]+']);
 
 资源集合匹配选项支持 match 选项（methods 选项除外），例如：
 ```.php
-$this->matchResources('documents', ['extra' => $callback]);
+$this->matchResources('documents', [
+    'extra' => $callback
+]);
 ```
 
 ## Scope 匹配
