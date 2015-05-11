@@ -72,7 +72,9 @@ $this->match('*wildcard');
 
 限制 HTTP 请求方法：
 ```.php
-$this->match('/', ['methods' => ['GET']]);
+$this->match('/', [
+    'methods' => ['GET']
+]);
 ```
 
 等价与：
