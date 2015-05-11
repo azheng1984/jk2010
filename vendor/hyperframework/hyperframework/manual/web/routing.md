@@ -335,7 +335,7 @@ $app = $this->getApp();
 ```.php
 $path = $this->getRequestPath();
 ```
-## 设置/获取 Action
+## 设置/获取 action
 设置：
 ```.php
 $this->setAction('preview');
@@ -344,7 +344,7 @@ $this->setAction('preview');
 ```.php
 $action = $this->getAction();
 ```
-## 设置/获取 Action 方法
+## 设置/获取 action 方法
 设置：
 ```.php
 $this->setActionMethod('doPreviewAction');
@@ -353,7 +353,7 @@ $this->setActionMethod('doPreviewAction');
 ```.php
 $method = $this->getActionMethod();
 ```
-## 设置/获取 Controller
+## 设置/获取 controller
 设置：
 ```.php
 $this->setController('documents');
@@ -362,7 +362,7 @@ $this->setController('documents');
 ```.php
 $controller = $this->getController();
 ```
-## 设置/获取 Controller 类
+## 设置/获取 controller 类
 设置：
 ```.php
 $this->setControllerClass('DocumentsController');
@@ -371,7 +371,7 @@ $this->setControllerClass('DocumentsController');
 ```.php
 $class = $this->getControllerClass();
 ```
-## 设置/获取 Module
+## 设置/获取 module
 设置：
 ```.php
 $this->setModule('admin');

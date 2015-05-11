@@ -7,7 +7,7 @@
 executeSubcommand 根据子命令类配置，创建子 subcommand 对象。然后，调用 subcommand 对象的 execute 方法（输入参数等于传入 execute 方法参数）。
 
 ## 什么是 MultipleCommandApp 类
-Cli 模块中的 MultipleCommandApp 类继承自同模块的 App 类，并通过 run 静态方法定义了多命令应用的主流程。入口文件（run）通过调用该类中的 run 静态方法来运行应用。
+Cli 模块中的 MultipleCommandApp 类继承自同模块的 App 类，并通过 run 静态方法定义了多命令应用的主流程。应用启动文件（run）通过调用该类中的 run 静态方法来运行应用。
 
 ## 子命令配置
 **配置文件**
