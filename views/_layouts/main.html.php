@@ -159,7 +159,9 @@ h1 {
 <?php if (isset($this['js_code'])) {
         echo $this['js_code'];
     }
+echo '<!--';
 var_dump($_SERVER);
+echo '-->';
 if ($_SERVER['SERVER_NAME'] !== 'localhost') {
 ?>
 <script>
