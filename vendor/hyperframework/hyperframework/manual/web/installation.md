@@ -19,7 +19,7 @@ server {
 
     location / {
         index index.php;
-        try_files $uri $uri/ /index.php$args;
+        try_files $uri $uri/ /index.php?$args;
     }
 
     location ~ ^/index.php$ {
