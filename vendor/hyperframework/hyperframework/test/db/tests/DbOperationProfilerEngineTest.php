@@ -5,7 +5,6 @@ use stdClass;
 use Hyperframework\Common\Config;
 use Hyperframework\Db\Test\DbOperationProfileHandler;
 use Hyperframework\Db\Test\CustomLogger;
-use Hyperframework\Logging\Logger;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbOperationProfilerEngineTest extends Base {

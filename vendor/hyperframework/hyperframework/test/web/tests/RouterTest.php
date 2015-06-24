@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class RouterTest extends Base {

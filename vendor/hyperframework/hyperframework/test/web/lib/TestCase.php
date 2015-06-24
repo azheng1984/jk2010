@@ -2,8 +2,6 @@
 namespace Hyperframework\Web\Test;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Web\CsrfProtection;
-use Hyperframework\Web\Response;
 use Hyperframework\Test\TestCase as Base;
 
 class TestCase extends Base {

@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Hyperframework\Common\ConfigException;
-
 class OptionConfig {
     private $name;
     private $shortName;

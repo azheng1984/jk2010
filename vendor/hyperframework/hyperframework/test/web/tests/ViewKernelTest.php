@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Common\Config;
 use Hyperframework\Common\FileFullPathBuilder;
 use Hyperframework\Web\Test\OpenView;
 use Hyperframework\Web\Test\TestCase as Base;

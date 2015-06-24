@@ -6,7 +6,6 @@ use stdClass;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\Registry;
 use Hyperframework\Db\Test\DbCustomClientEngine;
-use Hyperframework\Db\Test\DbCustomConnection;
 use Hyperframework\Db\DbClientEngine;
 use Hyperframework\Db\Test\TestCase as Base;
 

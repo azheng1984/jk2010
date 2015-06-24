@@ -4,7 +4,6 @@ namespace Hyperframework\Logging;
 use stdClass;
 use Datetime;
 use Hyperframework\Common\Config;
-use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Logging\Test\TestCase as Base;
 
 class LoggerEngineTest extends Base {

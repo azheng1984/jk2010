@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\Error;
 use Hyperframework\Common\ErrorHandler as Base;
@@ -64,7 +65,7 @@ class ErrorHandler extends Base {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Class '$logHandlerClass' does not exist,"
+                    "Class '$class' does not exist,"
                         . " set using config '$configName'."
                 );
             }

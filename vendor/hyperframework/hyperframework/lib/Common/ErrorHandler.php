@@ -203,7 +203,7 @@ class ErrorHandler {
         if ($loggerClass !== '') {
             if (class_exists($loggerClass) === false) {
                 throw new ClassNotFoundException(
-                    "Class '$class' does not exist, set using config "
+                    "Class '$loggerClass' does not exist, set using config "
                         . "'$configName'."
                 );
             }

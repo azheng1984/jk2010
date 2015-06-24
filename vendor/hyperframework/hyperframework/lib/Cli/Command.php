@@ -32,7 +32,7 @@ abstract class Command {
      * @return string[]
      */
     public function getArguments() {
-        $this->getApp();
+        $app = $this->getApp();
         return $app->getArguments();
     }
 

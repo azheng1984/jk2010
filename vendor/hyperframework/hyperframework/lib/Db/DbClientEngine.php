@@ -5,7 +5,6 @@ use PDO;
 use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
-use Hyperframework\Common\InvalidOperationException;
 
 class DbClientEngine {
     private $connection;

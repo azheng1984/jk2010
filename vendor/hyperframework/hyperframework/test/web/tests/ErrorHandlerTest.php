@@ -2,7 +2,6 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Logging\Logger;
 use Hyperframework\Web\Response;
 use Hyperframework\Web\Test\TestCase as Base;
 

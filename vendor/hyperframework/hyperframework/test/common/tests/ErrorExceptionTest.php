@@ -19,7 +19,7 @@ class ErrorExceptionTest extends Base {
             $exception->getSourceTraceAsString()
         );
         $this->assertSame(
-            "exception 'Hyperframework\Common\ErrorException' "
+            'exception \'Hyperframework\Common\ErrorException\' '
                 . "with message 'message' in file:0" . PHP_EOL . 'Stack trace:'
                 . PHP_EOL . $exception->getSourceTraceAsString(),
             (string)$exception

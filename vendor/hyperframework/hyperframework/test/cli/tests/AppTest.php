@@ -73,7 +73,7 @@ class AppTest extends Base {
     }
 
     public function testCustomHelp() {
-        $this->expectOutputString("Hyperframework\Cli\Test\Help::render");
+        $this->expectOutputString('Hyperframework\Cli\Test\Help::render');
         Config::set(
             'hyperframework.cli.help_class', 'Hyperframework\Cli\Test\Help'
         );
