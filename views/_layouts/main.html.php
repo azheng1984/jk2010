@@ -92,7 +92,7 @@ td {
     padding: 5px 15px;
 }
 #nav .selected {
-	background: #2C87C7;
+	background: ##1B8568;
 	box-shadow: inset 0 1px 1px rgba(100,100,100,.1);
 	border-radius: 5px;
 }
@@ -100,7 +100,7 @@ td {
 	border-left: 0;
 }
 #header-wrapper {
-	background-color: #5BB2EE;
+	background-color: #3CA98C;
 	width: 100%;
 	box-shadow: 0 0 4px rgba(0,0,0,.2);
 }
